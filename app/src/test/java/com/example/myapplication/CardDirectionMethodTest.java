@@ -6,6 +6,9 @@ import static org.junit.Assert.assertNotEquals;
 import org.junit.Test;
 
 public class CardDirectionMethodTest {
+    /**
+     * Testing to make sure that the method works as intended
+     */
     @Test
     public void cardDirection_North() {
         assertNotEquals("N", Utilities.cardDirection((float)25));

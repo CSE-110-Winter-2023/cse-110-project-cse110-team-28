@@ -3,9 +3,11 @@ package com.example.myapplication;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
-
+//Testing to make sure
 public class DirectionBetweenPointsTest {
-
+    /**
+     * Testing to make sure that the direction is correct using j-unit tests
+     */
     @Test
     public void northTest() {
         float lat1 = (float)30;
