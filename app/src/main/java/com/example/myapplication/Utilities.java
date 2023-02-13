@@ -64,6 +64,8 @@ public class Utilities {
 
     }
     public static String directionBetweenPoints(double point1lat, float point2lat, double point1long, float point2long) {
+        if (point1lat == point2lat && point1long == point2long)
+            return "";
         //using arctan2 function to find angle between parent and you, then converting it to degrees
         float angle = (float) ((float) Math.atan2(point2lat-point1lat, point2long-point1long)*180/Math.PI);
         //Subtracting 90 to account for offset with 0 being north
