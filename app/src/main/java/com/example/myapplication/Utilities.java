@@ -69,7 +69,7 @@ public class Utilities {
         //using arctan2 function to find angle between parent and you, then converting it to degrees
         float angle = (float) ((float) Math.atan2(point2lat-point1lat, point2long-point1long)*180/Math.PI);
         //Subtracting 90 to account for offset with 0 being north
-        angle = angle -90;
+        angle = 90 - angle;
         //call cardDirection to return direction as string
         return cardDirection(angle);
     }

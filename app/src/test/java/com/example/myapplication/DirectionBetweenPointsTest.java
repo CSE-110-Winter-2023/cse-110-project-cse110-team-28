@@ -28,20 +28,20 @@ public class DirectionBetweenPointsTest {
 
     @Test
     public void westTest() {
-        float lat1 = (float)30;
-        float long1 = (float)9;
-        float lat2 = (float)20;
-        float long2 = (float)108;
+        float lat1 = (float)20;
+        float long1 = (float)108;
+        float lat2 = (float)30;
+        float long2 = (float)9;
         assertEquals("W", Utilities.directionBetweenPoints(lat1,lat2,long1,long2));
         assertNotEquals("W", Utilities.directionBetweenPoints(lat2,lat1,long2,long1));
     }
 
     @Test
     public void EastTest() {
-        float lat1 = (float)0;
-        float long1 = (float)50;
-        float lat2 = (float)-2;
-        float long2 = (float)30;
+        float lat1 = (float)-2;
+        float long1 = (float)30;
+        float lat2 = (float)0;
+        float long2 = (float)50;
         assertEquals("E", Utilities.directionBetweenPoints(lat1,lat2,long1,long2));
         assertNotEquals("E", Utilities.directionBetweenPoints(lat2,lat1,long2,long1));
     }
@@ -49,9 +49,9 @@ public class DirectionBetweenPointsTest {
     @Test
     public void northWestTest() {
         float lat1 = (float)30;
-        float long1 = (float)50;
+        float long1 = (float)65;
         float lat2 = (float)52;
-        float long2 = (float)65;
+        float long2 = (float)50;
         assertEquals("NW", Utilities.directionBetweenPoints(lat1,lat2,long1,long2));
         assertNotEquals("NW", Utilities.directionBetweenPoints(lat2,lat1,long2,long1));
     }
@@ -59,9 +59,9 @@ public class DirectionBetweenPointsTest {
     @Test
     public void northEastTest() {
         float lat1 = (float)30;
-        float long1 = (float)50;
+        float long1 = (float)25;
         float lat2 = (float)52;
-        float long2 = (float)25;
+        float long2 = (float)50;
         assertEquals("NE", Utilities.directionBetweenPoints(lat1,lat2,long1,long2));
         assertNotEquals("NE", Utilities.directionBetweenPoints(lat2,lat1,long2,long1));
     }
@@ -69,9 +69,9 @@ public class DirectionBetweenPointsTest {
     @Test
     public void southEastTest() {
         float lat1 = (float)30;
-        float long1 = (float)55;
+        float long1 = (float)15;
         float lat2 = (float)-10;
-        float long2 = (float)15;
+        float long2 = (float)55;
         assertEquals("SE", Utilities.directionBetweenPoints(lat1,lat2,long1,long2));
         assertNotEquals("SE", Utilities.directionBetweenPoints(lat2,lat1,long2,long1));
     }
@@ -79,9 +79,9 @@ public class DirectionBetweenPointsTest {
     @Test
     public void southWestTest() {
         float lat1 = (float)30;
-        float long1 = (float)55;
+        float long1 = (float)85;
         float lat2 = (float)-10;
-        float long2 = (float)85;
+        float long2 = (float)55;
         assertEquals("SW", Utilities.directionBetweenPoints(lat1,lat2,long1,long2));
         assertNotEquals("SW", Utilities.directionBetweenPoints(lat2,lat1,long2,long1));
     }
