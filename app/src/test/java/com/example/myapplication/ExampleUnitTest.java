@@ -22,7 +22,7 @@ public class ExampleUnitTest {
         assertEquals("N", Utilities.cardDirection(0));
         assertEquals("N", Utilities.cardDirection(10));
     }
-
+    @Test
     public void cardDirection_South() {
         assertNotEquals("S", Utilities.cardDirection((float)0));
         assertEquals("S", Utilities.cardDirection((float)-170));
