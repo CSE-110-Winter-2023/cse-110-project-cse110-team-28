@@ -42,9 +42,11 @@ public class MainActivity extends AppCompatActivity {
 
         orientationService = OrientationService.singleton(this);
         TextView orientation_text = findViewById(R.id.orientation_text);
+        TextView cardinal_text = findViewById(R.id.CardinalDirection);
         orientationService.getOrientation().observe(this, orientation -> {
             // Update textview with latest value
             orientation_text.setText(Float.toString(orientation));
+            cardinal_text.setText(Utilities.cardDirection(orientation));
         });
 
         locationService = LocationService.singleton(this);
@@ -69,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
         TextView debug_parents = findViewById(R.id.debug_parents);
         debug_parents.setText(label_parents + ": lat = " + lat_parents + ", long = " + long_parents);
     }
+
 
     private void loadProfile() {
         SharedPreferences preferences = getSharedPreferences("saved_data", MODE_PRIVATE);
