@@ -69,6 +69,7 @@ public class OrientationService implements SensorEventListener {
     }
 
     private void onBothSensorDataAvailable() {
+        final double PI = 3.14159265358979323846;
         // Discount contract checking
         if (accelerometerReading == null || magnetometerReading == null) {
             throw new IllegalStateException("Both sensors must be available to compute orientation");
@@ -82,6 +83,9 @@ public class OrientationService implements SensorEventListener {
         if (success) {
             var orientation = new float[3];
             SensorManager.getOrientation(r, orientation);
+
+            //converts orientation from radians to degrees
+            orientation[0] = (float) ((orientation[0] * 180) / PI);
 
             // Orientation in order: azimuth, pitch, roll. We only care about azimuth
             // (Around the z-axis from -pi to pi)
