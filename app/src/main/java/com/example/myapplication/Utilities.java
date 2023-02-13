@@ -70,7 +70,5 @@ public class Utilities {
         angle = angle -90;
         //call cardDirection to return direction as string
         return cardDirection(angle);
-
-
     }
 }
