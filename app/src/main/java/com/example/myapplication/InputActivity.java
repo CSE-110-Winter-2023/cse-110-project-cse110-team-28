@@ -77,9 +77,6 @@ public class InputActivity extends AppCompatActivity {
         editor.putString("label_parents", this.label_parents);
         editor.putFloat("lat_parents", this.lat_parents);
         editor.putFloat("long_parents", this.long_parents);
-        Utilities.showAlert(this, label_parents);
-        Utilities.showAlert(this, Float.toString(lat_parents));
-        Utilities.showAlert(this, Float.toString(long_parents));
         editor.apply();
     }
 
