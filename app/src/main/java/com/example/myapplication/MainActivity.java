@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         locationService = LocationService.singleton(this);
         TextView location_text = findViewById(R.id.location_text);
         TextView parent_orientation = findViewById(R.id.parentOrientation);
-        TextView angleText = findViewById(R.id.angles);
+
 
         locationService.getLocation().observe(this, loc -> {
             location_text.setText(Double.toString(loc.first) + " , " + Double.toString(loc.second));
