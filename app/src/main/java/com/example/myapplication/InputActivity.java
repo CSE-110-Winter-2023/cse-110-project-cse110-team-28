@@ -40,7 +40,7 @@ public class InputActivity extends AppCompatActivity {
 
         String[] latlong_parents_split = latlong_parents.split(",");
         if (latlong_parents_split.length != 2) {
-            // TODO: Currently "1,1,,,,,," (however many ','s) are accepted as valid coordinates
+            // TODO: Currently "1,1,,,,,," (however many ','s) are accepted as valid coordinates... do we want to keep this behavior?
             Utilities.showAlert(this, "Please enter coordinates as 'lat,long'");
             return;
         }

@@ -49,8 +49,6 @@ public class MainActivity extends AppCompatActivity {
             orientation_text.setText(Float.toString(orientation));
             cardinal_text.setText(Utilities.cardDirection(orientation));
             orientation_current = orientation;
-
-
         });
 
         locationService = LocationService.singleton(this);
