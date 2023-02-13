@@ -17,6 +17,7 @@ public class MainActivity extends AppCompatActivity {
     private float lat_parents;
     private float long_parents;
     private String label_parents;
+    private float orientation_current;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,12 +48,21 @@ public class MainActivity extends AppCompatActivity {
             // Update textview with latest value
             orientation_text.setText(Float.toString(orientation));
             cardinal_text.setText(Utilities.cardDirection(orientation));
+            orientation_current = orientation;
+
+
         });
 
         locationService = LocationService.singleton(this);
         TextView location_text = findViewById(R.id.location_text);
+        TextView parent_orientation = findViewById(R.id.parentOrientation);
+        TextView angleText = findViewById(R.id.angles);
+
         locationService.getLocation().observe(this, loc -> {
             location_text.setText(Double.toString(loc.first) + " , " + Double.toString(loc.second));
+            parent_orientation.setText(Utilities.directionBetweenPoints(loc.first, lat_parents, loc.second, long_parents));
+
+
         });
 
     }
@@ -70,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
         loadProfile();
         TextView debug_parents = findViewById(R.id.debug_parents);
         debug_parents.setText(label_parents + ": lat = " + lat_parents + ", long = " + long_parents);
+
     }
 
 
