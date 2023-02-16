@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
@@ -58,8 +59,6 @@ public class MainActivity extends AppCompatActivity {
         locationService.getLocation().observe(this, loc -> {
             location_text.setText(Double.toString(loc.first) + " , " + Double.toString(loc.second));
             parent_orientation.setText(Utilities.directionBetweenPoints(loc.first, lat_parents, loc.second, long_parents));
-
-
         });
 
     }
@@ -89,5 +88,10 @@ public class MainActivity extends AppCompatActivity {
         this.long_parents = preferences.getFloat("long_parents", 181f);
 
         // TODO Do the same for the other 2 values...
+    }
+
+    public void onLaunchInputClicked(View view) {
+        Intent intent = new Intent(this, InputActivity.class);
+        startActivity(intent);
     }
 }
