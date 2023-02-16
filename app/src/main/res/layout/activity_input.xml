@@ -10,6 +10,7 @@
         android:id="@+id/submit_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="88dp"
         android:onClick="onSubmitClicked"
         android:text="Submit"
         app:layout_constraintEnd_toEndOf="parent"
@@ -40,5 +41,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.093" />
+
+    <EditText
+        android:id="@+id/set_orient"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="your orientation"
+        android:inputType="number"
+        tools:layout_editor_absoluteX="101dp"
+        tools:layout_editor_absoluteY="154dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

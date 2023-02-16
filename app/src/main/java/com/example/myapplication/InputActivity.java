@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import java.text.NumberFormat;
@@ -25,6 +26,7 @@ public class InputActivity extends AppCompatActivity {
         // Data validation - maybe we want this in Utilities instead?
         TextView label_parents_view = findViewById(R.id.label_parents);
         TextView latlong_parents_view = findViewById(R.id.latlong_parents);
+
 
         label_parents = label_parents_view.getText().toString();
         String latlong_parents = latlong_parents_view.getText().toString();
