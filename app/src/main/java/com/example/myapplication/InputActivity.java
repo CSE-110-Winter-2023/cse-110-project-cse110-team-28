@@ -78,6 +78,7 @@ public class InputActivity extends AppCompatActivity {
         }
         if (!set_orient_string.equals(""))
             saveSetOrientation();
+
         saveProfile();
         finish();
     }
@@ -104,7 +105,6 @@ public class InputActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = preferences.edit();
 
         editor.putFloat("set_orientation", this.set_orientation);
-
         editor.apply();
     }
 

@@ -19,13 +19,18 @@ public class MainActivity extends AppCompatActivity {
     private float long_parents;
     private String label_parents;
     private float orientation_current;
+    private float set_orientation = 0 ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        loadSetOrientation();
         loadProfile();
+
+        TextView setOrientView = findViewById(R.id.SetOrientation);
+        setOrientView.setText(Float.toString(this.set_orientation));
         // If nothing saved, launch InputActivity
         if (lat_parents == 91f || long_parents == 181f || label_parents == "")
         {
@@ -45,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
         orientationService = OrientationService.singleton(this);
         TextView orientation_text = findViewById(R.id.orientation_text);
         TextView cardinal_text = findViewById(R.id.CardinalDirection);
+
         orientationService.getOrientation().observe(this, orientation -> {
             // Update textview with latest value
             orientation_text.setText(Float.toString(orientation));
@@ -74,6 +80,9 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         // When returning from InputActivity, update the values so we can see
         loadProfile();
+        loadSetOrientation();
+        TextView setOrientView = findViewById(R.id.SetOrientation);
+        setOrientView.setText(Float.toString(this.set_orientation));
         TextView debug_parents = findViewById(R.id.debug_parents);
         debug_parents.setText(label_parents + ": lat = " + lat_parents + ", long = " + long_parents);
 
@@ -88,6 +97,12 @@ public class MainActivity extends AppCompatActivity {
         this.long_parents = preferences.getFloat("long_parents", 181f);
 
         // TODO Do the same for the other 2 values...
+    }
+
+    private void loadSetOrientation() {
+        SharedPreferences preferences = getSharedPreferences("saved_data", MODE_PRIVATE);
+
+        this.set_orientation = preferences.getFloat("set_orientation", 0);
     }
 
     public void onLaunchInputClicked(View view) {
