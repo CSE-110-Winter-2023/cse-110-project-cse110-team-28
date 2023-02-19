@@ -82,7 +82,25 @@ public class MainActivity extends AppCompatActivity {
         loadProfile();
         loadSetOrientation();
         TextView setOrientView = findViewById(R.id.SetOrientation);
-        setOrientView.setText(Float.toString(this.set_orientation));
+        TextView orientTextView = findViewById(R.id.orientation_text);
+        if (this.set_orientation != 360) {
+            setOrientView.setText(Float.toString(this.set_orientation));
+            orientTextView.setVisibility(View.INVISIBLE);
+        }
+        else {
+            orientationService = OrientationService.singleton(this);
+            TextView orientation_text = findViewById(R.id.orientation_text);
+            TextView cardinal_text = findViewById(R.id.CardinalDirection);
+
+            orientationService.getOrientation().observe(this, orientation -> {
+                // Update textview with latest value
+                orientation_text.setText(Float.toString(orientation));
+                cardinal_text.setText(Utilities.cardDirection(orientation));
+                orientation_current = orientation;
+            });
+            setOrientView.setText("");
+            orientTextView.setVisibility(View.VISIBLE);
+        }
         TextView debug_parents = findViewById(R.id.debug_parents);
         debug_parents.setText(label_parents + ": lat = " + lat_parents + ", long = " + long_parents);
 
@@ -102,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
     private void loadSetOrientation() {
         SharedPreferences preferences = getSharedPreferences("saved_data", MODE_PRIVATE);
 
-        this.set_orientation = preferences.getFloat("set_orientation", 0);
+        this.set_orientation = preferences.getFloat("set_orientation", 360);
     }
 
     public void onLaunchInputClicked(View view) {

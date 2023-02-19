@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">Social Compass</string>
+    <string name="phone_orientation">PHONE ORIENTATION</string>
+    <string name="relative_orientation">RELATIVE ORIENTATION</string>
+    <string name="orientation_updates">ORIENTATION UPDATES</string>
+    <string name="location">LOCATION</string>
+    <string name="location_updates">LOCATION UPDATES</string>
+    <string name="parents_info">PARENTS INFO</string>
+    <string name="n">N</string>
+    <string name="parents_house_is">Parents House is</string>
+    <string name="data_entry">Data Entry</string>
+    <string name="textview">TextView</string>
 </resources>
