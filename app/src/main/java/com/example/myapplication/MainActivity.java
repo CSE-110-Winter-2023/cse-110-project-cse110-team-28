@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
 
         locationService.getLocation().observe(this, loc -> {
             location_text.setText(Double.toString(loc.first) + " , " + Double.toString(loc.second));
-            parent_orientation.setText(Utilities.directionBetweenPoints(loc.first, lat_parents, loc.second, long_parents));
+            parent_orientation.setText(coordinateUtil.directionBetweenPoints(loc.first, lat_parents, loc.second, long_parents));
         });
 
     }
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         TextView cardinal_text = findViewById(R.id.CardinalDirection);
 
         orientation_text.setText(Float.toString(orientation));
-        cardinal_text.setText(Utilities.cardDirection(orientation));
+        cardinal_text.setText(coordinateUtil.cardDirection(orientation));
 
     }
 

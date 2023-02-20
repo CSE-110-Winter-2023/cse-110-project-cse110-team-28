@@ -14,8 +14,8 @@ public class DirectionBetweenPointsTest {
         float long1 = (float)50;
         float lat2 = (float)52;
         float long2 = (float)48;
-        assertEquals("N", Utilities.directionBetweenPoints(lat1,lat2,long1,long2));
-        assertNotEquals("N", Utilities.directionBetweenPoints(lat2,lat1,long2,long1));
+        assertEquals("N", coordinateUtil.directionBetweenPoints(lat1,lat2,long1,long2));
+        assertNotEquals("N", coordinateUtil.directionBetweenPoints(lat2,lat1,long2,long1));
     }
 
     @Test
@@ -24,8 +24,8 @@ public class DirectionBetweenPointsTest {
         float long1 = (float)55;
         float lat2 = (float)-10;
         float long2 = (float)55;
-        assertEquals("S", Utilities.directionBetweenPoints(lat1,lat2,long1,long2));
-        assertNotEquals("S", Utilities.directionBetweenPoints(lat2,lat1,long2,long1));
+        assertEquals("S", coordinateUtil.directionBetweenPoints(lat1,lat2,long1,long2));
+        assertNotEquals("S", coordinateUtil.directionBetweenPoints(lat2,lat1,long2,long1));
     }
 
     @Test
@@ -34,8 +34,8 @@ public class DirectionBetweenPointsTest {
         float long1 = (float)108;
         float lat2 = (float)30;
         float long2 = (float)9;
-        assertEquals("W", Utilities.directionBetweenPoints(lat1,lat2,long1,long2));
-        assertNotEquals("W", Utilities.directionBetweenPoints(lat2,lat1,long2,long1));
+        assertEquals("W", coordinateUtil.directionBetweenPoints(lat1,lat2,long1,long2));
+        assertNotEquals("W", coordinateUtil.directionBetweenPoints(lat2,lat1,long2,long1));
     }
 
     @Test
@@ -44,8 +44,8 @@ public class DirectionBetweenPointsTest {
         float long1 = (float)30;
         float lat2 = (float)0;
         float long2 = (float)50;
-        assertEquals("E", Utilities.directionBetweenPoints(lat1,lat2,long1,long2));
-        assertNotEquals("E", Utilities.directionBetweenPoints(lat2,lat1,long2,long1));
+        assertEquals("E", coordinateUtil.directionBetweenPoints(lat1,lat2,long1,long2));
+        assertNotEquals("E", coordinateUtil.directionBetweenPoints(lat2,lat1,long2,long1));
     }
 
     @Test
@@ -54,8 +54,8 @@ public class DirectionBetweenPointsTest {
         float long1 = (float)65;
         float lat2 = (float)52;
         float long2 = (float)50;
-        assertEquals("NW", Utilities.directionBetweenPoints(lat1,lat2,long1,long2));
-        assertNotEquals("NW", Utilities.directionBetweenPoints(lat2,lat1,long2,long1));
+        assertEquals("NW", coordinateUtil.directionBetweenPoints(lat1,lat2,long1,long2));
+        assertNotEquals("NW", coordinateUtil.directionBetweenPoints(lat2,lat1,long2,long1));
     }
 
     @Test
@@ -64,8 +64,8 @@ public class DirectionBetweenPointsTest {
         float long1 = (float)25;
         float lat2 = (float)52;
         float long2 = (float)50;
-        assertEquals("NE", Utilities.directionBetweenPoints(lat1,lat2,long1,long2));
-        assertNotEquals("NE", Utilities.directionBetweenPoints(lat2,lat1,long2,long1));
+        assertEquals("NE", coordinateUtil.directionBetweenPoints(lat1,lat2,long1,long2));
+        assertNotEquals("NE", coordinateUtil.directionBetweenPoints(lat2,lat1,long2,long1));
     }
 
     @Test
@@ -74,8 +74,8 @@ public class DirectionBetweenPointsTest {
         float long1 = (float)15;
         float lat2 = (float)-10;
         float long2 = (float)55;
-        assertEquals("SE", Utilities.directionBetweenPoints(lat1,lat2,long1,long2));
-        assertNotEquals("SE", Utilities.directionBetweenPoints(lat2,lat1,long2,long1));
+        assertEquals("SE", coordinateUtil.directionBetweenPoints(lat1,lat2,long1,long2));
+        assertNotEquals("SE", coordinateUtil.directionBetweenPoints(lat2,lat1,long2,long1));
     }
 
     @Test
@@ -84,8 +84,8 @@ public class DirectionBetweenPointsTest {
         float long1 = (float)85;
         float lat2 = (float)-10;
         float long2 = (float)55;
-        assertEquals("SW", Utilities.directionBetweenPoints(lat1,lat2,long1,long2));
-        assertNotEquals("SW", Utilities.directionBetweenPoints(lat2,lat1,long2,long1));
+        assertEquals("SW", coordinateUtil.directionBetweenPoints(lat1,lat2,long1,long2));
+        assertNotEquals("SW", coordinateUtil.directionBetweenPoints(lat2,lat1,long2,long1));
     }
 
     @Test
@@ -94,7 +94,7 @@ public class DirectionBetweenPointsTest {
         float long1 = (float)55;
         float lat2 = lat1;
         float long2 = long1;
-        assertEquals("", Utilities.directionBetweenPoints(lat1,lat2,long1,long2));
-        assertEquals("", Utilities.directionBetweenPoints(lat2,lat1,long2,long1));
+        assertEquals("", coordinateUtil.directionBetweenPoints(lat1,lat2,long1,long2));
+        assertEquals("", coordinateUtil.directionBetweenPoints(lat2,lat1,long2,long1));
     }
 }
