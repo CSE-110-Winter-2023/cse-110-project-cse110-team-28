@@ -16,9 +16,9 @@ public class Story1BDDTest {
     public void BDD1Test() {
         // Start facing North
         float orientation = 0f;
-        assertEquals("N", Utilities.cardDirection(orientation));
+        assertEquals("N", CoordinateUtil.cardDirection(orientation));
         // Turn to south
         orientation = 180f;
-        assertEquals("S", Utilities.cardDirection(orientation));
+        assertEquals("S", CoordinateUtil.cardDirection(orientation));
     }
 }
