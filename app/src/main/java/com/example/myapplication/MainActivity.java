@@ -32,12 +32,6 @@ public class MainActivity extends AppCompatActivity {
         loadSetOrientation();
         loadProfile();
 
-        if (this.set_orientation == 360) {
-            orientGetter = new ActualOrientation(this);
-        }
-        else {
-            orientGetter = new SetOrientation(this, set_orientation);
-        }
         // If nothing saved, launch InputActivity
         if (lat_parents == 91f || long_parents == 181f || label_parents == "")
         {
@@ -64,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
         TextView parent_comp_text = findViewById(R.id.ParentCompassDirection);
 
         orientation_text.setText(Float.toString(orientation));
-        cardinal_text.setText(Utilities.cardDirection(orientation));
+        cardinal_text.setText(coordinateUtil.cardDirection(orientation));
         updateParentRelDirection();
     }
 
@@ -74,14 +68,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void updateLocation(Pair<Double, Double> loc) {
-        this.directionToParents = Utilities.directionBetweenPoints(loc.first, lat_parents, loc.second, long_parents);
+        this.directionToParents = coordinateUtil.directionBetweenPoints(loc.first, lat_parents, loc.second, long_parents);
 
         TextView location_text = findViewById(R.id.location_text);
         TextView parent_orientation = findViewById(R.id.parentOrientation);
 
 
         location_text.setText(Double.toString(loc.first) + " , " + Double.toString(loc.second));
-        parent_orientation.setText(Utilities.cardDirection(this.directionToParents));
+        parent_orientation.setText(coordinateUtil.cardDirection(this.directionToParents));
         updateParentRelDirection();
     }
 
@@ -97,8 +91,6 @@ public class MainActivity extends AppCompatActivity {
         // When returning from InputActivity, update the values so we can see
         loadProfile();
         loadSetOrientation();
-//        TextView setOrientView = findViewById(R.id.SetOrientation);
-//        TextView orientTextView = findViewById(R.id.orientation_text);
         if (this.set_orientation == 360) {
             orientGetter = new ActualOrientation(this);
         }
@@ -110,7 +102,6 @@ public class MainActivity extends AppCompatActivity {
 
         TextView debug_parents = findViewById(R.id.debug_parents);
         debug_parents.setText(label_parents + ": lat = " + lat_parents + ", long = " + long_parents);
-
     }
 
 

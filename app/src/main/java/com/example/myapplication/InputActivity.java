@@ -8,8 +8,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import java.text.NumberFormat;
-
 public class InputActivity extends AppCompatActivity {
 
     private String label_parents;
@@ -34,19 +32,19 @@ public class InputActivity extends AppCompatActivity {
         label_parents = label_parents_view.getText().toString();
         String latlong_parents = latlong_parents_view.getText().toString();
         if (label_parents.equals("")) {
-            Utilities.showAlert(this, "Please enter a label for your parents' house!");
+            alertUtil.showAlert(this, "Please enter a label for your parents' house!");
             return;
         }
 
         if (latlong_parents.equals("")) {
-            Utilities.showAlert(this, "Please enter your parents' house's coordinates!");
+            alertUtil.showAlert(this, "Please enter your parents' house's coordinates!");
             return;
         }
 
         String[] latlong_parents_split = latlong_parents.split(",");
         if (latlong_parents_split.length != 2) {
             // TODO: Currently "1,1,,,,,," (however many ','s) are accepted as valid coordinates... do we want to keep this behavior?
-            Utilities.showAlert(this, "Please enter coordinates as 'lat,long'");
+            alertUtil.showAlert(this, "Please enter coordinates as 'lat,long'");
             return;
         }
 
@@ -54,7 +52,7 @@ public class InputActivity extends AppCompatActivity {
             lat_parents = Float.parseFloat(latlong_parents_split[0]);
             long_parents = Float.parseFloat(latlong_parents_split[1]);
         } catch (NumberFormatException e) {
-            Utilities.showAlert(this, "Please enter valid coordinates!");
+            alertUtil.showAlert(this, "Please enter valid coordinates!");
             return;
         }
 
@@ -62,19 +60,19 @@ public class InputActivity extends AppCompatActivity {
             if (!set_orient_string.equals(""))
                 set_orientation = Float.parseFloat(set_orient_string);
         } catch (NumberFormatException e) {
-            Utilities.showAlert(this, "Please enter valid orientation!");
+            alertUtil.showAlert(this, "Please enter valid orientation!");
             return;
         }
 
         if (lat_parents < -90 || lat_parents > 90 || long_parents < -180 || long_parents > 180) {
             // Might want less technical error messages in the final build
-            Utilities.showAlert(this, "Please ensure -90 < lat < 90 and -180 < long < 180");
+            alertUtil.showAlert(this, "Please ensure -90 < lat < 90 and -180 < long < 180");
             return;
         }
 
         if (!set_orient_string.equals("") && (set_orientation < 0 || set_orientation >= 360)) {
             // Might want less technical error messages in the final build
-            Utilities.showAlert(this, "Please ensure -0 <= Orientation < 360");
+            alertUtil.showAlert(this, "Please ensure -0 <= Orientation < 360");
             return;
         }
 
