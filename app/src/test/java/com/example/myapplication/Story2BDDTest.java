@@ -17,8 +17,8 @@ public class Story2BDDTest {
     public void BDD2Test() {
         float parentsLat = 40, parentsLong = -122;
         float myLat = 37, myLong = -122;
-        assertEquals("N", CoordinateUtil.directionBetweenPoints(myLat,parentsLat,myLong,parentsLong));
+        assertEquals("N", CoordinateUtil.cardDirection(CoordinateUtil.directionBetweenPoints(myLat,parentsLat,myLong,parentsLong)));
         myLong = -119;
-        assertEquals("NW", CoordinateUtil.directionBetweenPoints(myLat,parentsLat,myLong,parentsLong));
+        assertEquals("NW", CoordinateUtil.cardDirection(CoordinateUtil.directionBetweenPoints(myLat,parentsLat,myLong,parentsLong)));
     }
 }
