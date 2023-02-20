@@ -8,12 +8,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.View;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
-    private LocationService locationService;
+    private LocationGetter locGetter;
     private OrientationGetter orientGetter;
 
     private float lat_parents;
@@ -21,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
     private String label_parents;
     private float orientation_current;
     private float set_orientation;
+    private float directionToParents;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,15 +32,12 @@ public class MainActivity extends AppCompatActivity {
         loadSetOrientation();
         loadProfile();
 
-//        if (this.set_orientation != 360) {
-//            orientGetter = new ActualOrientation(this);
-//        }
-//        else {
-//            orientGetter = new SetOrientation(this, set_orientation);
-//        }
-
-        TextView setOrientView = findViewById(R.id.SetOrientation);
-        setOrientView.setText(Float.toString(this.set_orientation));
+        if (this.set_orientation == 360) {
+            orientGetter = new ActualOrientation(this);
+        }
+        else {
+            orientGetter = new SetOrientation(this, set_orientation);
+        }
         // If nothing saved, launch InputActivity
         if (lat_parents == 91f || long_parents == 181f || label_parents == "")
         {
@@ -55,26 +54,35 @@ public class MainActivity extends AppCompatActivity {
                     200);
         }
 
-
-
-        locationService = LocationService.singleton(this);
-        TextView location_text = findViewById(R.id.location_text);
-        TextView parent_orientation = findViewById(R.id.parentOrientation);
-
-        locationService.getLocation().observe(this, loc -> {
-            location_text.setText(Double.toString(loc.first) + " , " + Double.toString(loc.second));
-            parent_orientation.setText(Utilities.directionBetweenPoints(loc.first, lat_parents, loc.second, long_parents));
-        });
-
     }
 
     public void updateOrientation(float orientation) {
+        this.orientation_current = orientation;
+
         TextView orientation_text = findViewById(R.id.orientation_text);
         TextView cardinal_text = findViewById(R.id.CardinalDirection);
+        TextView parent_comp_text = findViewById(R.id.ParentCompassDirection);
 
         orientation_text.setText(Float.toString(orientation));
         cardinal_text.setText(Utilities.cardDirection(orientation));
+        updateParentRelDirection();
+    }
 
+    public void updateParentRelDirection() {
+        TextView par_comp_dir = findViewById(R.id.ParentCompassDirection);
+        par_comp_dir.setText(Double.toString(this.directionToParents - this.orientation_current));
+    }
+
+    public void updateLocation(Pair<Double, Double> loc) {
+        this.directionToParents = Utilities.directionBetweenPoints(loc.first, lat_parents, loc.second, long_parents);
+
+        TextView location_text = findViewById(R.id.location_text);
+        TextView parent_orientation = findViewById(R.id.parentOrientation);
+
+
+        location_text.setText(Double.toString(loc.first) + " , " + Double.toString(loc.second));
+        parent_orientation.setText(Utilities.cardDirection(this.directionToParents));
+        updateParentRelDirection();
     }
 
     @Override
@@ -97,6 +105,9 @@ public class MainActivity extends AppCompatActivity {
         else {
             orientGetter = new SetOrientation(this, set_orientation);
         }
+
+        locGetter = new ActualLocation(this);
+
         TextView debug_parents = findViewById(R.id.debug_parents);
         debug_parents.setText(label_parents + ": lat = " + lat_parents + ", long = " + long_parents);
 
