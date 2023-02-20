@@ -55,10 +55,9 @@ public class MainActivity extends AppCompatActivity {
 
         TextView orientation_text = findViewById(R.id.orientation_text);
         TextView cardinal_text = findViewById(R.id.CardinalDirection);
-        TextView parent_comp_text = findViewById(R.id.ParentCompassDirection);
 
         orientation_text.setText(Float.toString(orientation));
-        cardinal_text.setText(coordinateUtil.cardDirection(orientation));
+        cardinal_text.setText(CoordinateUtil.cardDirection(orientation));
         updateParentRelDirection();
     }
 
@@ -68,14 +67,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void updateLocation(Pair<Double, Double> loc) {
-        this.directionToParents = coordinateUtil.directionBetweenPoints(loc.first, lat_parents, loc.second, long_parents);
+        this.directionToParents = CoordinateUtil.directionBetweenPoints(loc.first, lat_parents, loc.second, long_parents);
 
         TextView location_text = findViewById(R.id.location_text);
         TextView parent_orientation = findViewById(R.id.parentOrientation);
 
-
         location_text.setText(Double.toString(loc.first) + " , " + Double.toString(loc.second));
-        parent_orientation.setText(coordinateUtil.cardDirection(this.directionToParents));
+        parent_orientation.setText(CoordinateUtil.cardDirection(this.directionToParents));
         updateParentRelDirection();
     }
 

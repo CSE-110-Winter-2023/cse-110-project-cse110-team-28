@@ -1,9 +1,6 @@
 package com.example.myapplication;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-
-public class coordinateUtil {
+public class CoordinateUtil {
 
     public static String cardDirection(float orientation) {
 
