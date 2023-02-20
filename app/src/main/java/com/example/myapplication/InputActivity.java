@@ -59,7 +59,8 @@ public class InputActivity extends AppCompatActivity {
         }
 
         try {
-            set_orientation = Float.parseFloat(set_orient_string);
+            if (!set_orient_string.equals(""))
+                set_orientation = Float.parseFloat(set_orient_string);
         } catch (NumberFormatException e) {
             Utilities.showAlert(this, "Please enter valid orientation!");
             return;
@@ -71,13 +72,13 @@ public class InputActivity extends AppCompatActivity {
             return;
         }
 
-        if (set_orientation < 0 || set_orientation >= 360) {
+        if (!set_orient_string.equals("") && (set_orientation < 0 || set_orientation >= 360)) {
             // Might want less technical error messages in the final build
             Utilities.showAlert(this, "Please ensure -0 <= Orientation < 360");
             return;
         }
-        if (!set_orient_string.equals(""))
-            saveSetOrientation();
+
+        saveSetOrientation(set_orient_string.equals(""));
 
         saveProfile();
         finish();
@@ -93,18 +94,20 @@ public class InputActivity extends AppCompatActivity {
         SharedPreferences preferences = getSharedPreferences("saved_data", MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
 
-
         editor.putString("label_parents", this.label_parents);
         editor.putFloat("lat_parents", this.lat_parents);
         editor.putFloat("long_parents", this.long_parents);
         editor.apply();
     }
 
-    private void saveSetOrientation(){
+    private void saveSetOrientation(boolean set){
         SharedPreferences preferences = getSharedPreferences("saved_data", MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
 
-        editor.putFloat("set_orientation", this.set_orientation);
+        if (set)
+            editor.putFloat("set_orientation", 360);
+        else
+            editor.putFloat("set_orientation", this.set_orientation);
         editor.apply();
     }
 
