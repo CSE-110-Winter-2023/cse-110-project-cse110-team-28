@@ -6,6 +6,9 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
+import android.widget.ImageView;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -16,6 +19,8 @@ public class OrientationService implements SensorEventListener {
     private final SensorManager sensorManager;
     private float[] accelerometerReading;
     private float[] magnetometerReading;
+
+    float currentDegree = 0.0f;
     private MutableLiveData<Float> azimuth;
 
     /**
@@ -91,6 +96,9 @@ public class OrientationService implements SensorEventListener {
             // (Around the z-axis from -pi to pi)
             // 0 means north, pi means south. pi/2 is east, 3pi/2 is west.
             this.azimuth.postValue(orientation[0]);
+
+
+
         }
     }
 

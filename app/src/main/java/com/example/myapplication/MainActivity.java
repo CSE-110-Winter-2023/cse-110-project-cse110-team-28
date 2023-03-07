@@ -10,6 +10,9 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Pair;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
@@ -21,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private float orientation_current;
     private float set_orientation;
     private String user_UUID;
+    float currentDegree = 0.0f;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +60,17 @@ public class MainActivity extends AppCompatActivity {
         orientation_text.setText(Float.toString(orientation));
         cardinal_text.setText(CoordinateUtil.cardDirection(orientation));
         updateParentRelDirection();
+
+        RotateAnimation rotateAnimation =
+                new RotateAnimation(currentDegree ,-1 *(this.orientation_current), Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        rotateAnimation.setDuration(250);
+        rotateAnimation.setFillAfter(true);
+
+        this.currentDegree = this.orientation_current;
+        ImageView imageView = findViewById(R.id.compassImg);
+        imageView.startAnimation(rotateAnimation);
+
+
     }
 
     // TODO adapt this for friends instead
@@ -107,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences preferences = getSharedPreferences("saved_data", MODE_PRIVATE);
 
         this.set_orientation = preferences.getFloat("set_orientation", 360);
+
     }
 
     public void onLaunchInputClicked(View view) {

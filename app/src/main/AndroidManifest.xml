@@ -16,9 +16,6 @@
         android:theme="@style/Theme.MyApplication"
         tools:targetApi="31">
         <activity
-            android:name=".compass"
-            android:exported="false" />
-        <activity
             android:name=".InputActivity"
             android:exported="false">
             <meta-data
