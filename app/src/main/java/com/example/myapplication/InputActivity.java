@@ -100,5 +100,13 @@ public class InputActivity extends AppCompatActivity {
         editor.apply();
     }
 
+    // FOR TESTING ONLY. Clear the UUID.
+    public void clearUUID() {
+        this.user_UUID = "";
+        SharedPreferences.Editor editor = this.preferences.edit();
+        editor.putString("user_UUID", "");
+        editor.apply();
+    }
+
 
 }
