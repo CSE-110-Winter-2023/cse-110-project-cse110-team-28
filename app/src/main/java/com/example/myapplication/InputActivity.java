@@ -8,13 +8,13 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class InputActivity extends AppCompatActivity {
+import java.util.UUID;
 
-    private SharedPreferences preferences;
-    private String label_parents;
-    private float lat_parents;
-    private float long_parents;
+public class InputActivity extends AppCompatActivity {
     private float set_orientation;
+    private String user_name_string;
+    private String user_UUID;
+    private SharedPreferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,64 +23,30 @@ public class InputActivity extends AppCompatActivity {
 
         // Load shared preferences
         this.preferences = getSharedPreferences("saved_data", MODE_PRIVATE);
+        this.user_name_string = preferences.getString("user_name", "");
+        this.user_UUID = preferences.getString("user_UUID", "");
+        this.set_orientation = preferences.getFloat("set_orientation", 360);
 
-        TextView label_parents_view = findViewById(R.id.label_parents);
-        TextView latlong_parents_view = findViewById(R.id.latlong_parents);
-        EditText set_orient_view = findViewById(R.id.set_orient);
+        EditText set_orient_text = findViewById(R.id.set_orient);
+        EditText user_name_text = findViewById(R.id.user_name);
 
         // Load saved data into the textview
+        user_name_text.setText(user_name_string);
 
-        this.label_parents = preferences.getString("label_parents", "");
-        this.lat_parents = preferences.getFloat("lat_parents", 91f);
-        this.long_parents = preferences.getFloat("long_parents", 181f);
-
-        label_parents_view.setText(label_parents);
-        if (lat_parents != 91f && long_parents != 181f) {
-            // Only populate if lat long exists
-            latlong_parents_view.setText(Float.toString(lat_parents) + "," + Float.toString(long_parents));
-        }
-        this.set_orientation = preferences.getFloat("set_orientation", 360);
         if (set_orientation != 360) {
             // Same, only populate if set
-            set_orient_view.setText(Float.toString(set_orientation));
+            set_orient_text.setText(Float.toString(set_orientation));
         }
 
     }
 
     public void onSubmitClicked(View view) {
         // Data validation - maybe we want this in Utilities instead?
-        TextView label_parents_view = findViewById(R.id.label_parents);
-        TextView latlong_parents_view = findViewById(R.id.latlong_parents);
         EditText set_orient_view = findViewById(R.id.set_orient);
+        EditText user_name = findViewById(R.id.user_name);
 
         String set_orient_string = set_orient_view.getText().toString();
-
-        label_parents = label_parents_view.getText().toString();
-        String latlong_parents = latlong_parents_view.getText().toString();
-        if (label_parents.equals("")) {
-            AlertUtil.showAlert(this, "Please enter a label for your parents' house!");
-            return;
-        }
-
-        if (latlong_parents.equals("")) {
-            AlertUtil.showAlert(this, "Please enter your parents' house's coordinates!");
-            return;
-        }
-
-        String[] latlong_parents_split = latlong_parents.split(",");
-        if (latlong_parents_split.length != 2) {
-            // TODO: Currently "1,1,,,,,," (however many ','s) are accepted as valid coordinates... do we want to keep this behavior?
-            AlertUtil.showAlert(this, "Please enter coordinates as 'lat,long'");
-            return;
-        }
-
-        try {
-            lat_parents = Float.parseFloat(latlong_parents_split[0]);
-            long_parents = Float.parseFloat(latlong_parents_split[1]);
-        } catch (NumberFormatException e) {
-            AlertUtil.showAlert(this, "Please enter valid coordinates!");
-            return;
-        }
+        this.user_name_string = user_name.getText().toString();
 
         try {
             if (!set_orient_string.equals(""))
@@ -90,16 +56,18 @@ public class InputActivity extends AppCompatActivity {
             return;
         }
 
-        if (lat_parents < -90 || lat_parents > 90 || long_parents < -180 || long_parents > 180) {
-            // Might want less technical error messages in the final build
-            AlertUtil.showAlert(this, "Please ensure -90 < lat < 90 and -180 < long < 180");
+        if (!set_orient_string.equals("") && (set_orientation < 0 || set_orientation >= 360)) {
+            AlertUtil.showAlert(this, "Please ensure -0 <= Orientation < 360");
             return;
         }
 
-        if (!set_orient_string.equals("") && (set_orientation < 0 || set_orientation >= 360)) {
-            // Might want less technical error messages in the final build
-            AlertUtil.showAlert(this, "Please ensure -0 <= Orientation < 360");
+        if (user_name_string.equals("")) {
+            AlertUtil.showAlert(this, "Please enter a name!");
             return;
+        }
+        // If no UUID present, generate a new one.
+        if (user_UUID.equals("")) {
+            user_UUID = UUID.randomUUID().toString();
         }
 
         saveSetOrientation(!set_orient_string.equals(""));
@@ -117,9 +85,8 @@ public class InputActivity extends AppCompatActivity {
     private void saveProfile(){
         SharedPreferences.Editor editor = this.preferences.edit();
 
-        editor.putString("label_parents", this.label_parents);
-        editor.putFloat("lat_parents", this.lat_parents);
-        editor.putFloat("long_parents", this.long_parents);
+        editor.putString("user_name", user_name_string);
+        editor.putString("user_UUID", user_UUID);
         editor.apply();
     }
 
