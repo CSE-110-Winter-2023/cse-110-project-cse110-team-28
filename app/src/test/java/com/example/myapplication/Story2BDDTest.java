@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+// TODO: I don't think this is relevant anymore.
 public class Story2BDDTest {
     /**
      * GIVEN My parent's house is at 40, -122

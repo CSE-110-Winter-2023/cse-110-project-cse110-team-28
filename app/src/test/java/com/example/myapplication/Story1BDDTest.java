@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+// TODO: Rewrite this as a robolectric test maybe?
 public class Story1BDDTest {
 /**
  * GIVEN I am facing North

@@ -12,17 +12,15 @@ import android.util.Pair;
 import android.view.View;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 public class MainActivity extends AppCompatActivity {
 
     private LocationGetter locGetter;
     private OrientationGetter orientGetter;
-
-    private float lat_parents;
-    private float long_parents;
-    private String label_parents;
     private float orientation_current;
     private float set_orientation;
-    private float directionToParents;
+    private String user_UUID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,9 +30,8 @@ public class MainActivity extends AppCompatActivity {
         loadSetOrientation();
         loadProfile();
 
-        // If nothing saved, launch InputActivity
-        if (lat_parents == 91f || long_parents == 181f || label_parents == "")
-        {
+        // If nothing saved, launch InputActivity ( Do we want to check UUID or name?)
+        if (user_UUID.equals("")) {
             Intent intent = new Intent(this, InputActivity.class);
             startActivity(intent);
         }
@@ -61,19 +58,16 @@ public class MainActivity extends AppCompatActivity {
         updateParentRelDirection();
     }
 
+    // TODO adapt this for friends instead
     public void updateParentRelDirection() {
-        TextView par_comp_dir = findViewById(R.id.ParentCompassDirection);
-        par_comp_dir.setText(Double.toString(this.directionToParents - this.orientation_current));
+
     }
 
     public void updateLocation(Pair<Double, Double> loc) {
-        this.directionToParents = CoordinateUtil.directionBetweenPoints(loc.first, lat_parents, loc.second, long_parents);
-
         TextView location_text = findViewById(R.id.location_text);
-        TextView parent_orientation = findViewById(R.id.parentOrientation);
 
+        // TODO Update all friend locations too
         location_text.setText(Double.toString(loc.first) + " , " + Double.toString(loc.second));
-        parent_orientation.setText(CoordinateUtil.cardDirection(this.directionToParents));
         updateParentRelDirection();
     }
 
@@ -86,8 +80,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // When returning from InputActivity, update the values so we can see
         loadProfile();
+        // When returning from InputActivity, check for mocked orientation
         loadSetOrientation();
         if (this.set_orientation == 360) {
             orientGetter = new ActualOrientation(this);
@@ -98,21 +92,17 @@ public class MainActivity extends AppCompatActivity {
 
         locGetter = new ActualLocation(this);
 
-        TextView debug_parents = findViewById(R.id.debug_parents);
-        debug_parents.setText(label_parents + ": lat = " + lat_parents + ", long = " + long_parents);
+        // Display user's UUID
+        TextView uuid_view = findViewById(R.id.uuid_view);
+        uuid_view.setText("Your UUID: " + user_UUID);
     }
-
 
     private void loadProfile() {
         SharedPreferences preferences = getSharedPreferences("saved_data", MODE_PRIVATE);
 
-        this.label_parents = preferences.getString("label_parents", "");
-        this.lat_parents = preferences.getFloat("lat_parents", 91f);
-        this.long_parents = preferences.getFloat("long_parents", 181f);
+        this.user_UUID = preferences.getString("user_UUID", "");
 
-        // TODO Do the same for the other 2 values...
     }
-
     private void loadSetOrientation() {
         SharedPreferences preferences = getSharedPreferences("saved_data", MODE_PRIVATE);
 
