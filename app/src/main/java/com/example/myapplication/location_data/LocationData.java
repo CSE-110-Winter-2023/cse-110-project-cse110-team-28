@@ -18,7 +18,7 @@ public class LocationData {
     @NonNull
     public String public_code;
 
-    @SerializedName("private_code") public String private_code;
+    public String private_code;
 
     @SerializedName("label") public String label;
 
@@ -26,21 +26,24 @@ public class LocationData {
 
     @SerializedName("longitude") public float longitude;
 
+    @SerializedName("is_listed_publicly") public boolean is_listed_publicly;
+
     @SerializedName("created_at") public long created_at;
 
     // Defaults to 0, so that if Location Data already exists remotely, its content is always preferred
     @SerializedName("updated_at") public long updated_at = 0;
 
     // Constructor
-    public LocationData(@NonNull String public_code, String private_code, String label, float latitude, float longitude, long created_at) {
+    public LocationData(@NonNull String public_code, String label, float latitude, float longitude) {
         this.public_code = public_code;
-        this.private_code = private_code;
         this.label = label;
         this.latitude = latitude;
         this.longitude = longitude;
-        this.created_at = created_at;
+        // this.created_at = ; TODO HOW DO WE HANDLE TIME?
         this.updated_at = 0;
     }
+
+    // Private code will not be serialized.
 
     public static LocationData fromJSON(String json) { return new Gson().fromJson(json, LocationData.class); }
 
