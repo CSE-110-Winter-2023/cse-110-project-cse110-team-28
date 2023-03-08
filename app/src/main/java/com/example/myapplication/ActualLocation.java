@@ -1,7 +1,8 @@
 package com.example.myapplication;
 
 import android.util.Pair;
-import android.widget.TextView;
+
+import com.example.myapplication.activity.MainActivity;
 
 
 public class ActualLocation implements LocationGetter{

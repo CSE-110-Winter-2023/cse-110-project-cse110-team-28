@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -15,7 +15,13 @@ import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
+import com.example.myapplication.ActualLocation;
+import com.example.myapplication.ActualOrientation;
+import com.example.myapplication.CoordinateUtil;
+import com.example.myapplication.LocationGetter;
+import com.example.myapplication.OrientationGetter;
+import com.example.myapplication.R;
+import com.example.myapplication.SetOrientation;
 
 public class MainActivity extends AppCompatActivity {
 

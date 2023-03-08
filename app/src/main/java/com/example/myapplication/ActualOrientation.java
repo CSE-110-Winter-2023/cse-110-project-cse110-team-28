@@ -1,12 +1,6 @@
 package com.example.myapplication;
 
-import android.app.Activity;
-import android.view.animation.Animation;
-import android.view.animation.RotateAnimation;
-import android.widget.ImageView;
-import android.widget.TextView;
-
-import androidx.appcompat.app.AppCompatActivity;
+import com.example.myapplication.activity.MainActivity;
 
 
 public class ActualOrientation implements OrientationGetter{
