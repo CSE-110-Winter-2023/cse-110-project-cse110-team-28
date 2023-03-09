@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        this.orientGetter.halt();
+        // this.orientGetter.halt();
     }
 
     @Override
@@ -104,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
         loadProfile();
         // When returning from InputActivity, check for mocked orientation
         loadSetOrientation();
+        /* TODO dont forget about this
         if (this.set_orientation == 360) {
             orientGetter = new ActualOrientation(this);
         }
@@ -112,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         locGetter = new ActualLocation(this);
+*/
 
         // Display user's UUID
         TextView uuid_view = findViewById(R.id.uuid_view);
@@ -133,6 +135,12 @@ public class MainActivity extends AppCompatActivity {
 
     public void onLaunchInputClicked(View view) {
         Intent intent = new Intent(this, InputActivity.class);
+        startActivity(intent);
+    }
+
+    // Temp test
+    public void launchTest(View view) {
+        Intent intent = new Intent(this, TestActivity.class);
         startActivity(intent);
     }
 }
