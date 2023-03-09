@@ -22,7 +22,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class LocationAPI {
+public class LocationAPI{
     private volatile static LocationAPI instance = null;
     private OkHttpClient client;
     private String url_begin = "https://socialcompass.goto.ucsd.edu/";
@@ -66,9 +66,9 @@ public class LocationAPI {
     }
 
     @WorkerThread
-    public LocationData get(String UUID) {
+    public LocationData get(String public_code) {
         Request request = new Request.Builder()
-                .url(url_begin + "location/" + UUID)
+                .url(url_begin + "location/" + public_code)
                 .method("GET", null)
                 .build();
 
@@ -80,8 +80,7 @@ public class LocationAPI {
 
             // Check return code
             if (response.code() != 200) {
-                // TODO: Throw exception? Or return null or something.
-                return null;
+                throw new RuntimeException("Response code not OK: " + response.code());
             }
 
             LocationData toReturn = LocationData.fromJSON(body);
@@ -113,8 +112,7 @@ public class LocationAPI {
 
             // Check return code
             if (response.code() != 200) {
-                // TODO: Throw exception? Or return null or something.
-                return "RESPONSE CODE: " + response.code();
+                throw new RuntimeException("Response code not OK: " + response.code());
             }
             return body;
         } catch (Exception e) {
@@ -158,14 +156,13 @@ public class LocationAPI {
 
             // Check return code
             if (response.code() != 200) {
-                // TODO: Throw exception? Or return null or something.
-                return "RESPONSE CODE: " + response.code();
+                throw new RuntimeException("Response code not OK: " + response.code());
             }
             return body;
 
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            return "EXCEPTION - YOU SHOULDN'T SEE THIS";
         }
     }
 

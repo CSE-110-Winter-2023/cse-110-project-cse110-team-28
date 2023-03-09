@@ -24,9 +24,6 @@ public class TestActivity extends AppCompatActivity {
         this.repo = new LocationRepository(dao);
 
         TextView get_text = findViewById(R.id.get_text);
-        var get = repo.getRemote("482bb86e-7ede-48b7-a04a-5fd4da224efb");
-        var get_value = get.getValue();
-        // get_text.setText(get_value.toJSON());
 
     }
 }
