@@ -66,10 +66,11 @@ public class LocationAPI{
     }
 
     @WorkerThread
-    public LocationData get(String public_code) {
+    public LocationData get(String public_code) throws RuntimeException{
         Request request = new Request.Builder()
                 .url(url_begin + "location/" + public_code)
                 .method("GET", null)
+                .addHeader("accept", "application/json")
                 .build();
 
         try (Response response = client.newCall(request).execute()) {

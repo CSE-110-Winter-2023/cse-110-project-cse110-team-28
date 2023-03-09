@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey;
 import com.example.myapplication.location_data.annotations.DelExclude;
 import com.example.myapplication.location_data.annotations.PatchExclude;
 import com.google.gson.Gson;
+import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 
 import java.time.Instant;
@@ -41,9 +42,11 @@ public class LocationData {
     @Transient
     public boolean is_listed_publicly;
 
+    @JsonAdapter(TimestampAdapter.class)
     @Transient
     public long created_at;
 
+    @JsonAdapter(TimestampAdapter.class)
     @Transient
     // Defaults to 0, so that if Location Data already exists remotely, its content is always preferred
     public long updated_at = 0;
