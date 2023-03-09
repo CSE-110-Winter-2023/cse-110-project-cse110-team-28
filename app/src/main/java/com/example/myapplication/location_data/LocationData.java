@@ -9,6 +9,9 @@ import com.example.myapplication.location_data.annotations.PatchExclude;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
+import java.time.Instant;
+import java.util.UUID;
+
 import kotlin.jvm.Transient;
 
 
@@ -46,7 +49,17 @@ public class LocationData {
     public long updated_at = 0;
 
     // Constructor
-    // TODO constructor
+    public LocationData(@NonNull String public_code, String label, float latitude, float longitude, boolean is_listed_publicly) {
+        this.public_code = public_code;
+        this.private_code = UUID.randomUUID().toString(); // Just use another UUID as "password"/ private key
+        this.label = label;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.is_listed_publicly = is_listed_publicly;
+        Instant instant = Instant.now();
+        this.created_at = instant.getEpochSecond();
+        this.updated_at = this.created_at;
+    }
 
     public static LocationData fromJSON(String json) { return new Gson().fromJson(json, LocationData.class); }
 

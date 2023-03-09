@@ -21,8 +21,8 @@ public abstract class LocationDataDao {
     @Query("SELECT * FROM location_data WHERE public_code = :UUID")
     public abstract LiveData<LocationData> get(String UUID);
 
-    @Query("SELECT * FROM location_data WHERE public_code = :UUID")
-    public abstract LiveData<List<LocationData>> getAll(String UUID);
+    @Query("SELECT * FROM location_data ORDER BY public_code")
+    public abstract LiveData<List<LocationData>> getAll();
 
     @Delete
     public abstract int delete(LocationData data);
