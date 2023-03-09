@@ -26,6 +26,10 @@ public class MainActivity extends AppCompatActivity {
     private String user_UUID;
     float currentDegree = 0.0f;
 
+    LayoutHandler lh = new LayoutHandler();
+
+    Friend myFriend = new Friend(0f, 0f, "Calvin", "myUUID");
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
         // Display user's UUID
         TextView uuid_view = findViewById(R.id.uuid_view);
         uuid_view.setText("Your UUID: " + user_UUID);
+
     }
 
     private void loadProfile() {
