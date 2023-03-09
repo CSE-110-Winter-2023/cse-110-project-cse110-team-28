@@ -53,4 +53,9 @@ public class CoordinateUtil {
         //call cardDirection to return direction as string
         return angle;
     }
+
+//    public static float distanceBetweenPoints(int point1lat, float point2lat, double point1long, float point2long) {
+//
+//
+//    }
 }

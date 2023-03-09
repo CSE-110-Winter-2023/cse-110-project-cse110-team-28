@@ -69,7 +69,13 @@ public class MainActivity extends AppCompatActivity {
 
         ImageView imageView = findViewById(R.id.compassImg);
         imageView.startAnimation(rotateAnimation);
+
+        Friend friend = new Friend(50,50,"erick", "erick_uuid", this.currentDegree);
+        friend.friendLocation(60,60, 90);
+
         this.currentDegree = -1*(this.orientation_current);
+
+
 
     }
 
