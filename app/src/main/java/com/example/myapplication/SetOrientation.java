@@ -1,5 +1,7 @@
 package com.example.myapplication;
 
+import com.example.myapplication.activity.MainActivity;
+
 public class SetOrientation implements OrientationGetter{
     private float curr_orient;
     MainActivity activity;

@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -17,7 +17,15 @@ import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
+import com.example.myapplication.ActualLocation;
+import com.example.myapplication.ActualOrientation;
+import com.example.myapplication.CoordinateUtil;
+import com.example.myapplication.Friend;
+import com.example.myapplication.LayoutHandler;
+import com.example.myapplication.LocationGetter;
+import com.example.myapplication.OrientationGetter;
+import com.example.myapplication.R;
+import com.example.myapplication.SetOrientation;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -109,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        this.orientGetter.halt();
+        // this.orientGetter.halt();
     }
 
     @Override
@@ -120,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
         point.setVisibility(View.INVISIBLE);
         // When returning from InputActivity, check for mocked orientation
         loadSetOrientation();
+        /* TODO dont forget about this
         if (this.set_orientation == 360) {
             orientGetter = new ActualOrientation(this);
         }
@@ -128,6 +137,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         locGetter = new ActualLocation(this);
+*/
 
         // Display user's UUID
         TextView uuid_view = findViewById(R.id.uuid_view);
@@ -153,4 +163,5 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, InputActivity.class);
         startActivity(intent);
     }
+
 }

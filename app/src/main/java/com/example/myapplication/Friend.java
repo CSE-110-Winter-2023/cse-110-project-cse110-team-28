@@ -7,18 +7,18 @@ public class Friend {
     private String username;
     private String UUID;
 
-    Friend( float lat, float longit, String username, String UUID) {
+    public Friend(float lat, float longit, String username, String UUID) {
         this.lat = lat;
         this.longit = longit;
         this.username = username;
         this.UUID = UUID;
     }
 
-    float getLat() {
+    public float getLat() {
         return lat;
     }
 
-    float getLong() {
+    public float getLong() {
         return longit;
     }
 

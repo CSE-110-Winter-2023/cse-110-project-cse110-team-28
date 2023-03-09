@@ -11,12 +11,12 @@ public class LayoutHandler {
 
     int radius = 222;
 
-     int x_coordinate(float angle) {
+     public int x_coordinate(float angle) {
 
         return (int)(Math.cos(((angle-90)*Math.PI)/180) * radius + middle_X);
 
     }
-    int y_coordinate(float angle) {
+    public int y_coordinate(float angle) {
 
         return (int)(Math.sin(((angle-90)*Math.PI)/180) * radius + middle_Y);
 
