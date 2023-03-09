@@ -66,10 +66,10 @@ public class MainActivity extends AppCompatActivity {
         rotateAnimation.setDuration(250);
         rotateAnimation.setFillAfter(true);
 
-        this.currentDegree = -1*(this.orientation_current);
+
         ImageView imageView = findViewById(R.id.compassImg);
         imageView.startAnimation(rotateAnimation);
-
+        this.currentDegree = -1*(this.orientation_current);
 
     }
 
