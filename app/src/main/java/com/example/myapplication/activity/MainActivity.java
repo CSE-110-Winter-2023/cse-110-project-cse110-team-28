@@ -7,7 +7,9 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Pair;
 import android.view.View;
 import android.view.animation.Animation;
@@ -31,6 +33,12 @@ public class MainActivity extends AppCompatActivity {
     private float set_orientation;
     private String user_UUID;
     float currentDegree = 0.0f;
+
+
+
+    LayoutHandler lh = new LayoutHandler();
+
+    Friend myFriend = new Friend(55f, -100f, "Calvin", "myUUID");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,9 +95,21 @@ public class MainActivity extends AppCompatActivity {
     public void updateLocation(Pair<Double, Double> loc) {
         TextView location_text = findViewById(R.id.location_text);
 
+        ImageView point = findViewById(R.id.point);
+        //point.setX(CoordinateUtil.directionBetweenPoints(loc.first,myFriend.getLat(),loc.second,myFriend.getLong()));
+        //point.setY(CoordinateUtil.directionBetweenPoints(loc.first,myFriend.getLat(),loc.second,myFriend.getLong()));
+
+        //getResources().getDisplayMetrics().density;
+
+        //int px = (int) (150*getResources().getDisplayMetrics().density/160);
+        float angle = CoordinateUtil.directionBetweenPoints(loc.first,myFriend.getLat(),loc.second,myFriend.getLong());
+        point.setX(lh.x_coordinate(angle));
+        point.setY(lh.y_coordinate(angle));
+
         // TODO Update all friend locations too
         location_text.setText(Double.toString(loc.first) + " , " + Double.toString(loc.second));
         updateParentRelDirection();
+        point.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -102,6 +122,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         loadProfile();
+        ImageView point = findViewById(R.id.point);
+        point.setVisibility(View.INVISIBLE);
         // When returning from InputActivity, check for mocked orientation
         loadSetOrientation();
         /* TODO dont forget about this
@@ -118,6 +140,8 @@ public class MainActivity extends AppCompatActivity {
         // Display user's UUID
         TextView uuid_view = findViewById(R.id.uuid_view);
         uuid_view.setText("Your UUID: " + user_UUID);
+
+
     }
 
     private void loadProfile() {
