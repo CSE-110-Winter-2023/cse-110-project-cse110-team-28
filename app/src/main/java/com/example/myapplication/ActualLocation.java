@@ -9,6 +9,8 @@ public class ActualLocation implements LocationGetter{
     private LocationService locationService;
     MainActivity activity;
     private Pair<Double, Double> location;
+    private double latitude;
+    private double longitude;
 
 
     ActualLocation(MainActivity activity) {
@@ -19,15 +21,16 @@ public class ActualLocation implements LocationGetter{
 
 
         locationService.getLocation().observe(this.activity, loc -> {
-
+                this.latitude = loc.first;
+                this.longitude = loc.second;
                 this.activity.updateLocation(loc);
-                location = loc;
+                this.location = loc;
         });
     }
 
     @Override
     public Pair<Double, Double> getLocation() {
-        return location;
+        return this.location;
     }
 
 }

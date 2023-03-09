@@ -6,15 +6,19 @@ public class LayoutHandler {
 
     int pixelWidth = 411;
     int pixelHeight = 731;
-    int middle_X = pixelWidth/2;
-    int middle_Y = pixelHeight/2;
+    int middle_X = 430;
+    int middle_Y = 810;
 
-    int radius = 205;
+    int radius = 222;
 
-     Pair<Integer, Integer> angleToCoordinate(float angle) {
+     int x_coordinate(float angle) {
 
-        return new Pair<>((int) (Math.cos(angle) * radius + middle_X),
-                (int) (Math.sin(angle) * radius + middle_Y));
+        return (int)(Math.cos(((angle-90)*Math.PI)/180) * radius + middle_X);
+
+    }
+    int y_coordinate(float angle) {
+
+        return (int)(Math.sin(((angle-90)*Math.PI)/180) * radius + middle_Y);
 
     }
 
