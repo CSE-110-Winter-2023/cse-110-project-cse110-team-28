@@ -6,7 +6,6 @@ import androidx.annotation.WorkerThread;
 
 import java.lang.reflect.Type;
 
-import com.example.myapplication.location_data.annotations.DelExclude;
 import com.example.myapplication.location_data.annotations.PatchExclude;
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
@@ -14,6 +13,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
+import java.time.Instant;
 import java.util.List;
 
 import okhttp3.MediaType;
@@ -66,7 +66,7 @@ public class LocationAPI{
     }
 
     @WorkerThread
-    public LocationData get(String public_code) throws RuntimeException{
+    public LocationData get(String public_code){
         Request request = new Request.Builder()
                 .url(url_begin + "location/" + public_code)
                 .method("GET", null)
@@ -87,7 +87,7 @@ public class LocationAPI{
             LocationData toReturn = LocationData.fromJSON(body);
             return toReturn;
         } catch (Exception e) {
-            e.printStackTrace();
+            // e.printStackTrace();
             return null;
         }
     }
@@ -95,8 +95,8 @@ public class LocationAPI{
     @WorkerThread
     public String put(LocationData location) {
         // Create RequestBody
-
-
+        Instant instant = Instant.now();
+        location.updated_at = instant.getEpochSecond();
         String json = location.toJSON();
 
         RequestBody requestBody = RequestBody.create(json, MediaType.parse("application/json; charset=utf-8"));
@@ -117,7 +117,7 @@ public class LocationAPI{
             }
             return body;
         } catch (Exception e) {
-            e.printStackTrace();
+            // e.printStackTrace();
             return null;
         }
     }
@@ -125,29 +125,14 @@ public class LocationAPI{
     @WorkerThread
     public String delete(LocationData location){
 
-        ExclusionStrategy strategy = new ExclusionStrategy() {
-            @Override
-            public boolean shouldSkipClass(Class<?> clazz) {
-                return false;
-            }
-
-            // Skip any fields with the @DelExclude annotation
-            @Override
-            public boolean shouldSkipField(FieldAttributes field) {
-                return field.getAnnotation(DelExclude.class) != null;
-            }
-        };
-        Gson gson = new GsonBuilder()
-                .addSerializationExclusionStrategy(strategy)
-                .create();
-
-        String json = new Gson().toJson(gson);
-
+        String json = location.toJSON();
         RequestBody requestBody = RequestBody.create(json, MediaType.parse("application/json; charset=utf-8"));
     
         var request = new Request.Builder()
                 .url(url_begin + "location/" + location.public_code)
-                .put(requestBody)
+                .addHeader("Accept", "application/json")
+                .addHeader("Content-Type", "application/json")
+                .delete(requestBody)
                 .build();
 
         try (var response = client.newCall(request).execute()) {
@@ -162,13 +147,16 @@ public class LocationAPI{
             return body;
 
         } catch (Exception e) {
-            e.printStackTrace();
-            return "EXCEPTION - YOU SHOULDN'T SEE THIS";
+            // e.printStackTrace();
+            return null;
         }
     }
 
     @WorkerThread
     public String patch(LocationData location) {
+        Instant instant = Instant.now();
+        location.updated_at = instant.getEpochSecond();
+
         ExclusionStrategy strategy = new ExclusionStrategy() {
             @Override
             public boolean shouldSkipClass(Class<?> clazz) {
@@ -185,24 +173,23 @@ public class LocationAPI{
                 .addSerializationExclusionStrategy(strategy)
                 .create();
 
-        String json = new Gson().toJson(gson);
+        String json = gson.toJson(location);
 
         RequestBody requestBody = RequestBody.create(json, MediaType.parse("application/json; charset=utf-8"));
 
         var request = new Request.Builder()
                 .url(url_begin + "location/" + location.public_code)
-                .put(requestBody)
+                .patch(requestBody)
                 .build();
 
         try (var response = client.newCall(request).execute()) {
             assert response.body() != null;
             var body = response.body().string();
-            Log.i("DELETE", body);
+            Log.i("PATCH", body);
 
             // Check return code
             if (response.code() != 200) {
-                // TODO: Throw exception? Or return null or something.
-                return "RESPONSE CODE: " + response.code();
+                throw new RuntimeException("Response code not OK: " + response.code());
             }
             return body;
 

@@ -4,16 +4,12 @@ import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import com.example.myapplication.location_data.annotations.DelExclude;
 import com.example.myapplication.location_data.annotations.PatchExclude;
 import com.google.gson.Gson;
 import com.google.gson.annotations.JsonAdapter;
-import com.google.gson.annotations.SerializedName;
 
 import java.time.Instant;
 import java.util.UUID;
-
-import kotlin.jvm.Transient;
 
 
 /*
@@ -23,31 +19,30 @@ import kotlin.jvm.Transient;
 public class LocationData {
     // UUID is used as the public code on the server.
     @PrimaryKey
-    @Transient
+    @PatchExclude
     @NonNull
     public String public_code; // aka UUID
 
     public String private_code;
 
     @PatchExclude
-    @DelExclude
     public String label;
 
-    @DelExclude
+
     public float latitude;
 
-    @DelExclude
+
     public float longitude;
 
-    @Transient
+    @PatchExclude
     public boolean is_listed_publicly;
 
     @JsonAdapter(TimestampAdapter.class)
-    @Transient
+    @PatchExclude
     public long created_at;
 
     @JsonAdapter(TimestampAdapter.class)
-    @Transient
+    @PatchExclude
     // Defaults to 0, so that if Location Data already exists remotely, its content is always preferred
     public long updated_at = 0;
 
