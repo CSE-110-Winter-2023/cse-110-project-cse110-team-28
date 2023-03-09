@@ -4,8 +4,13 @@ import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import com.example.myapplication.location_data.annotations.DelExclude;
+import com.example.myapplication.location_data.annotations.PatchExclude;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
+
+import kotlin.jvm.Transient;
+
 
 /*
  * Used to package our friend's location information into a nice object.
@@ -14,36 +19,34 @@ import com.google.gson.annotations.SerializedName;
 public class LocationData {
     // UUID is used as the public code on the server.
     @PrimaryKey
-    @SerializedName("public_code")
+    @Transient
     @NonNull
-    public String public_code;
+    public String public_code; // aka UUID
 
     public String private_code;
 
-    @SerializedName("label") public String label;
+    @PatchExclude
+    @DelExclude
+    public String label;
 
-    @SerializedName("latitude") public float latitude;
+    @DelExclude
+    public float latitude;
 
-    @SerializedName("longitude") public float longitude;
+    @DelExclude
+    public float longitude;
 
-    @SerializedName("is_listed_publicly") public boolean is_listed_publicly;
+    @Transient
+    public boolean is_listed_publicly;
 
-    @SerializedName("created_at") public long created_at;
+    @Transient
+    public long created_at;
 
+    @Transient
     // Defaults to 0, so that if Location Data already exists remotely, its content is always preferred
-    @SerializedName("updated_at") public long updated_at = 0;
+    public long updated_at = 0;
 
     // Constructor
-    public LocationData(@NonNull String public_code, String label, float latitude, float longitude) {
-        this.public_code = public_code;
-        this.label = label;
-        this.latitude = latitude;
-        this.longitude = longitude;
-        // this.created_at = ; TODO HOW DO WE HANDLE TIME?
-        this.updated_at = 0;
-    }
-
-    // Private code will not be serialized.
+    // TODO constructor
 
     public static LocationData fromJSON(String json) { return new Gson().fromJson(json, LocationData.class); }
 
