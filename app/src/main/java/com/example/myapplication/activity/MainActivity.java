@@ -20,6 +20,8 @@ import android.widget.TextView;
 import com.example.myapplication.ActualLocation;
 import com.example.myapplication.ActualOrientation;
 import com.example.myapplication.CoordinateUtil;
+import com.example.myapplication.Friend;
+import com.example.myapplication.LayoutHandler;
 import com.example.myapplication.LocationGetter;
 import com.example.myapplication.OrientationGetter;
 import com.example.myapplication.R;
@@ -162,9 +164,4 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    // Temp test
-    public void launchTest(View view) {
-        Intent intent = new Intent(this, TestActivity.class);
-        startActivity(intent);
-    }
 }
