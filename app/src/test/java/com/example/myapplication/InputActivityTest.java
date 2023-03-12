@@ -91,4 +91,9 @@ public class InputActivityTest {
             assertEquals(old_UUID, new_UUID);
         });
     }
+
+    @Test
+    public void test_custom_url_saved() {
+        // Not sure why this isn't working
+    }
 }

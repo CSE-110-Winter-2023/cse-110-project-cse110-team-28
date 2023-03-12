@@ -7,9 +7,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.Pair;
 import android.view.View;
 import android.view.animation.Animation;
@@ -17,15 +15,10 @@ import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.myapplication.ActualLocation;
-import com.example.myapplication.ActualOrientation;
 import com.example.myapplication.CoordinateUtil;
 import com.example.myapplication.Friend;
 import com.example.myapplication.LayoutHandler;
-import com.example.myapplication.LocationGetter;
-import com.example.myapplication.OrientationGetter;
 import com.example.myapplication.R;
-import com.example.myapplication.SetOrientation;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -54,15 +47,6 @@ public class MainActivity extends AppCompatActivity {
         if (user_UUID.equals("")) {
             Intent intent = new Intent(this, InputActivity.class);
             startActivity(intent);
-        }
-
-        // Ask for location permissions
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
-                        != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    200);
         }
 
     }
@@ -123,21 +107,30 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        // Ask for location permissions
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    200);
+        }
+
         loadProfile();
         ImageView point = findViewById(R.id.point);
         point.setVisibility(View.INVISIBLE);
-        // When returning from InputActivity, check for mocked orientation
-        loadSetOrientation();
-        /* TODO dont forget about this
-        if (this.set_orientation == 360) {
-            orientGetter = new ActualOrientation(this);
-        }
-        else {
-            orientGetter = new SetOrientation(this, set_orientation);
-        }
-
+        // When returning from InputActivity, check for mocked orientation - SHOULDN'T BE MOCKED
+//        loadSetOrientation();
+//
+//        if (this.set_orientation == 360) {
+//            orientGetter = new ActualOrientation(this);
+//        }
+//        else {
+//            orientGetter = new SetOrientation(this, set_orientation);
+//        }
+        orientGetter = new ActualOrientation(this);
         locGetter = new ActualLocation(this);
-*/
 
         // Display user's UUID
         TextView uuid_view = findViewById(R.id.uuid_view);
