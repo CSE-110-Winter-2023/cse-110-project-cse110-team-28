@@ -38,6 +38,7 @@ public class LocationAPI{
         if (instance == null) {
             instance = new LocationAPI("https://socialcompass.goto.ucsd.edu/");
         }
+        instance.url_begin = "https://socialcompass.goto.ucsd.edu/";
         return instance;
     }
 
