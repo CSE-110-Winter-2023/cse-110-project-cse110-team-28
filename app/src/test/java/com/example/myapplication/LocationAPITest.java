@@ -19,7 +19,7 @@ import java.time.Instant;
 import java.util.Random;
 
 public class LocationAPITest {
-    LocationAPI api = new LocationAPI().provide();
+    LocationAPI api = LocationAPI.provide();
     LocationData test_loc = new LocationData("test_28", "Team 28 test", 10f, 10f, false);
     Instant created = Instant.now();
 
