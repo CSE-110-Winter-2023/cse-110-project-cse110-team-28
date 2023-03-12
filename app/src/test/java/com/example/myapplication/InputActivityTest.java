@@ -94,6 +94,33 @@ public class InputActivityTest {
 
     @Test
     public void test_custom_url_saved() {
-        // Not sure why this isn't working
+//        // Not sure why this isn't working.
+//        var scenario = ActivityScenario.launch(InputActivity.class);
+//        scenario.moveToState(Lifecycle.State.CREATED);
+//        scenario.moveToState(Lifecycle.State.STARTED);
+//
+//        String default_url = "https://socialcompass.goto.ucsd.edu/";
+//        String new_url = "https://sc2.ucsd.edu";
+//
+//        scenario.onActivity(activity -> {
+//            SharedPreferences pref = activity.getSharedPreferences("saved_data", Context.MODE_PRIVATE);
+//            String saved_server = pref.getString("custom_server", "");
+//            assertEquals("", saved_server); // Nothing saved originally
+//
+//            Button submit_btn = activity.findViewById(R.id.submit_button);
+//            submit_btn.performClick();
+//        });
+//
+//        // Close activity, and reopen.
+//        scenario.moveToState(Lifecycle.State.DESTROYED);
+//
+//        var scenario2 = ActivityScenario.launch(InputActivity.class);
+//        scenario2.moveToState(Lifecycle.State.CREATED);
+//        scenario2.moveToState(Lifecycle.State.STARTED);
+//        scenario2.onActivity(activity -> {
+//            SharedPreferences pref = activity.getSharedPreferences("saved_data", Context.MODE_PRIVATE);
+//            String saved_server = pref.getString("custom_server", "");
+//            assertEquals(saved_server, default_url); // Now it is default
+//        });
     }
 }
