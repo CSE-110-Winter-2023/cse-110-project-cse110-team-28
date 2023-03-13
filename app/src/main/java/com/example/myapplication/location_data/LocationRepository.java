@@ -46,6 +46,11 @@ public class LocationRepository {
         return location;
     }
 
+    public void upsertSynced(LocationData data) {
+//        upsertLocal(data);
+//        upsertRemote(data);
+    }
+
     // Local Methods
     public LiveData<LocationData> getLocal(String public_code) { return dao.get(public_code); }
 

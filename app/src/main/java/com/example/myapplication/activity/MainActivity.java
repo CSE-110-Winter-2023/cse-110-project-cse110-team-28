@@ -2,6 +2,7 @@ package com.example.myapplication.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -9,6 +10,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Pair;
 import android.view.View;
@@ -24,6 +26,11 @@ import com.example.myapplication.R;
 import com.example.myapplication.friends.FriendAdapter;
 import com.example.myapplication.friends.FriendDatabase;
 import com.example.myapplication.friends.FriendListDao;
+import com.example.myapplication.location_data.LocationAdapter;
+import com.example.myapplication.location_data.LocationData;
+import com.example.myapplication.location_data.LocationDataDao;
+import com.example.myapplication.location_data.LocationDatabase;
+import com.example.myapplication.location_data.LocationViewModel;
 
 import java.util.List;
 
@@ -49,18 +56,44 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        FriendListDao friendListDao = FriendDatabase.getSingleton(this).friendListDao();
+        // LAB CODE
+        LocationDataDao locationDataDao = LocationDatabase.provide(this).getDao();
+//
+//        List<LocationData> friends = locationDataDao.getAll().getValue();
 
-        List<Friend> friends = friendListDao.getAll();
 
-        FriendAdapter adapter = new FriendAdapter();
+        // THESE TWO GUYS ARE CURRENTLY IN THE LOCAL DATABASE AND ARE BEING DISPLAYED ON THE HOME SCREEN
+        LocationData data2 = new LocationData("abc", "Bob", 10f, 10f, true);
+        var data = new LocationData("myUUID", "Calvin", 55f, -100f, false);
+        locationDataDao.upsert(data);
+//        // locationDataDao.upsert(data);
+//
+//        var exists = locationDataDao.exists("abc");
+//        var cde = locationDataDao.exists("cde");
+//
+//        var got = locationDataDao.get("abc");
+//
+//        LocationAdapter adapter = new LocationAdapter();
+//        adapter.setHasStableIds(true);
+//        adapter.setLocationData(friends);
+//
+//        recyclerView = findViewById(R.id.friend_list);
+//        recyclerView.setLayoutManager(new LinearLayoutManager(this)); // TODO do I want a custom cicrular layout manager...
+//        recyclerView.setAdapter(adapter);
+        // TODO do I need to remove scrolling?
+
+
+        // SHAREDNOTES CODE
+        var viewModel = new ViewModelProvider(this).get(LocationViewModel.class);
+        var adapter = new LocationAdapter();
         adapter.setHasStableIds(true);
-        adapter.setFriends(friends);
+        viewModel.getData().observe(this, adapter::setLocationData);
+
+
 
         recyclerView = findViewById(R.id.friend_list);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this)); // TODO do I want a custom cicrular layout manager...
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
-        // TODO do I need to remove scrolling?
 
         loadSetOrientation();
         loadProfile();
