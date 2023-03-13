@@ -10,12 +10,11 @@
         android:id="@+id/submit_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="88dp"
         android:onClick="onSubmitClicked"
         android:text="Submit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/user_name" />
+        app:layout_constraintTop_toBottomOf="@+id/custom_server" />
 
     <EditText
         android:id="@+id/user_name"
@@ -43,16 +42,15 @@
         app:layout_constraintVertical_bias="0.093" />
 
     <EditText
-        android:id="@+id/set_orient"
+        android:id="@+id/custom_server"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="154dp"
         android:ems="10"
-        android:hint="your orientation"
-        android:inputType="number"
+        android:hint="custom server"
+        android:inputType="textPersonName"
+        android:text="https://socialcompass.goto.ucsd.edu/"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/user_name" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

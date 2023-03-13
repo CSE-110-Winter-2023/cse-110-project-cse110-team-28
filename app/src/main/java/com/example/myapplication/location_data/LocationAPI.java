@@ -25,17 +25,29 @@ import okhttp3.Response;
 public class LocationAPI{
     private volatile static LocationAPI instance = null;
     private OkHttpClient client;
-    private String url_begin = "https://socialcompass.goto.ucsd.edu/";
+    public String url_begin = "https://socialcompass.goto.ucsd.edu/";
     // TODO we should be able to change this for testing
 
-    public LocationAPI() {
+    public LocationAPI(String url) {
         this.client = new OkHttpClient();
+        this.url_begin = url;
     }
 
+    // no argument constructor uses default server
     public static LocationAPI provide() {
         if (instance == null) {
-            instance = new LocationAPI();
+            instance = new LocationAPI("https://socialcompass.goto.ucsd.edu/");
         }
+        instance.url_begin = "https://socialcompass.goto.ucsd.edu/";
+        return instance;
+    }
+
+    // overload: use provided server instead
+    public static LocationAPI provide(String url) {
+        if (instance == null) {
+            instance = new LocationAPI(url);
+        }
+        instance.url_begin = url;
         return instance;
     }
 

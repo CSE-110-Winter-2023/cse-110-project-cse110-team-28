@@ -4,9 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.example.myapplication.AlertUtil;
 import com.example.myapplication.R;
@@ -14,9 +14,9 @@ import com.example.myapplication.R;
 import java.util.UUID;
 
 public class InputActivity extends AppCompatActivity {
-    private float set_orientation;
     private String user_name_string;
     private String user_UUID;
+    private String custom_server;
     private SharedPreferences preferences;
 
     @Override
@@ -28,41 +28,25 @@ public class InputActivity extends AppCompatActivity {
         this.preferences = getSharedPreferences("saved_data", MODE_PRIVATE);
         this.user_name_string = preferences.getString("user_name", "");
         this.user_UUID = preferences.getString("user_UUID", "");
-        this.set_orientation = preferences.getFloat("set_orientation", 360);
+        this.custom_server = preferences.getString("custom_server", "https://socialcompass.goto.ucsd.edu/");
 
-        EditText set_orient_text = findViewById(R.id.set_orient);
         EditText user_name_text = findViewById(R.id.user_name);
+        EditText custom_server_text = findViewById(R.id.custom_server);
 
         // Load saved data into the textview
         user_name_text.setText(user_name_string);
+        custom_server_text.setText(custom_server);
 
-        if (set_orientation != 360) {
-            // Same, only populate if set
-            set_orient_text.setText(Float.toString(set_orientation));
-        }
 
     }
 
     public void onSubmitClicked(View view) {
         // Data validation - maybe we want this in Utilities instead?
-        EditText set_orient_view = findViewById(R.id.set_orient);
         EditText user_name = findViewById(R.id.user_name);
+        EditText custom_server_text = findViewById(R.id.custom_server);
 
-        String set_orient_string = set_orient_view.getText().toString();
+        this.custom_server = custom_server_text.getText().toString();
         this.user_name_string = user_name.getText().toString();
-
-        try {
-            if (!set_orient_string.equals(""))
-                set_orientation = Float.parseFloat(set_orient_string);
-        } catch (NumberFormatException e) {
-            AlertUtil.showAlert(this, "Please enter valid orientation!");
-            return;
-        }
-
-        if (!set_orient_string.equals("") && (set_orientation < 0 || set_orientation >= 360)) {
-            AlertUtil.showAlert(this, "Please ensure -0 <= Orientation < 360");
-            return;
-        }
 
         if (user_name_string.equals("")) {
             AlertUtil.showAlert(this, "Please enter a name!");
@@ -73,7 +57,7 @@ public class InputActivity extends AppCompatActivity {
             user_UUID = UUID.randomUUID().toString();
         }
 
-        saveSetOrientation(!set_orient_string.equals(""));
+        saveCustomServer();
 
         saveProfile();
         finish();
@@ -93,13 +77,17 @@ public class InputActivity extends AppCompatActivity {
         editor.apply();
     }
 
-    private void saveSetOrientation(boolean set){
+    private void saveCustomServer(){
         SharedPreferences.Editor editor = this.preferences.edit();
 
-        if (!set)
-            editor.putFloat("set_orientation", 360);
-        else
-            editor.putFloat("set_orientation", this.set_orientation);
+        if (this.custom_server.equals("")){
+            editor.putString("custom_server", "https://socialcompass.goto.ucsd.edu/");
+            Log.e("Saved", "https://socialcompass.goto.ucsd.edu/");
+        } else {
+            editor.putString("custom_server", this.custom_server);
+            Log.e("Saved", this.custom_server);
+        }
+
         editor.apply();
     }
 

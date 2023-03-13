@@ -1,8 +1,8 @@
-package com.example.myapplication;
+package com.example.myapplication.activity;
 
 import android.util.Pair;
 
-import com.example.myapplication.activity.MainActivity;
+import com.example.myapplication.LocationService;
 
 
 public class ActualLocation implements LocationGetter{
