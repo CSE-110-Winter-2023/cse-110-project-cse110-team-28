@@ -41,7 +41,6 @@ public class MainActivity extends AppCompatActivity {
     private LocationGetter locGetter;
     private OrientationGetter orientGetter;
     private float orientation_current;
-    private float set_orientation;
     private String user_UUID;
     float currentDegree = 0.0f;
 
@@ -95,7 +94,6 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
-        loadSetOrientation();
         loadProfile();
 
         // If nothing saved, launch InputActivity ( Do we want to check UUID or name?)
@@ -198,15 +196,14 @@ public class MainActivity extends AppCompatActivity {
         this.user_UUID = preferences.getString("user_UUID", "");
 
     }
-    private void loadSetOrientation() {
-        SharedPreferences preferences = getSharedPreferences("saved_data", MODE_PRIVATE);
-
-        this.set_orientation = preferences.getFloat("set_orientation", 360);
-
-    }
 
     public void onLaunchInputClicked(View view) {
         Intent intent = new Intent(this, InputActivity.class);
+        startActivity(intent);
+    }
+
+    public void onAddFriendClicked(View view) {
+        Intent intent = new Intent(this, AddFriendActivity.class);
         startActivity(intent);
     }
 
