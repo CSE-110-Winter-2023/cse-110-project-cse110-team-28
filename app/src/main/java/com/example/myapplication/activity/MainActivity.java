@@ -22,6 +22,10 @@ import com.example.myapplication.friends.Friend;
 import com.example.myapplication.LayoutHandler;
 import com.example.myapplication.R;
 import com.example.myapplication.friends.FriendAdapter;
+import com.example.myapplication.friends.FriendDatabase;
+import com.example.myapplication.friends.FriendListDao;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -45,8 +49,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        FriendListDao friendListDao = FriendDatabase.getSingleton(this).friendListDao();
+
+        List<Friend> friends = friendListDao.getAll();
+
         FriendAdapter adapter = new FriendAdapter();
         adapter.setHasStableIds(true);
+        adapter.setFriends(friends);
 
         recyclerView = findViewById(R.id.friend_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this)); // TODO do I want a custom cicrular layout manager...
