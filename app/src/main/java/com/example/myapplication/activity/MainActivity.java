@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
         //getResources().getDisplayMetrics().density;
 
         //int px = (int) (150*getResources().getDisplayMetrics().density/160);
-        float angle = CoordinateUtil.directionBetweenPoints(loc.first,myFriend.getLat(),loc.second,myFriend.getLong());
+        float angle = CoordinateUtil.directionBetweenPoints(loc.first,myFriend.getLat(),loc.second,myFriend.getLong())-this.orientation_current;
         point.setX(lh.x_coordinate(angle));
         point.setY(lh.y_coordinate(angle));
 

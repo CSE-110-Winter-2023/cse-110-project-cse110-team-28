@@ -6,8 +6,8 @@ public class LayoutHandler {
 
     int pixelWidth = 411;
     int pixelHeight = 731;
-    int middle_X = 430;
-    int middle_Y = 810;
+    int middle_X = 440;
+    int middle_Y = 710;
 
     int radius = 222;
 
