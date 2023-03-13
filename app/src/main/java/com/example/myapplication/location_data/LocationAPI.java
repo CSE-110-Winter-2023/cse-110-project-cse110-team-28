@@ -26,7 +26,6 @@ public class LocationAPI{
     private volatile static LocationAPI instance = null;
     private OkHttpClient client;
     public String url_begin = "https://socialcompass.goto.ucsd.edu/";
-    // TODO we should be able to change this for testing
 
     public LocationAPI(String url) {
         this.client = new OkHttpClient();

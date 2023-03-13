@@ -2,11 +2,15 @@ package com.example.myapplication.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Pair;
 import android.view.View;
@@ -16,16 +20,27 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.myapplication.CoordinateUtil;
-import com.example.myapplication.Friend;
+import com.example.myapplication.friends.Friend;
 import com.example.myapplication.LayoutHandler;
 import com.example.myapplication.R;
+import com.example.myapplication.friends.FriendAdapter;
+import com.example.myapplication.friends.FriendDatabase;
+import com.example.myapplication.friends.FriendListDao;
+import com.example.myapplication.location_data.LocationAdapter;
+import com.example.myapplication.location_data.LocationData;
+import com.example.myapplication.location_data.LocationDataDao;
+import com.example.myapplication.location_data.LocationDatabase;
+import com.example.myapplication.location_data.LocationViewModel;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+
+    public RecyclerView recyclerView;
 
     private LocationGetter locGetter;
     private OrientationGetter orientGetter;
     private float orientation_current;
-    private float set_orientation;
     private String user_UUID;
     float currentDegree = 0.0f;
 
@@ -40,7 +55,45 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        loadSetOrientation();
+        // LAB CODE
+        LocationDataDao locationDataDao = LocationDatabase.provide(this).getDao();
+//
+//        List<LocationData> friends = locationDataDao.getAll().getValue();
+
+
+        // THESE TWO GUYS ARE CURRENTLY IN THE LOCAL DATABASE AND ARE BEING DISPLAYED ON THE HOME SCREEN
+        LocationData data2 = new LocationData("abc", "Bob", 10f, 10f, true);
+        var data = new LocationData("myUUID", "Calvin", 55f, -100f, false);
+        locationDataDao.upsert(data);
+//        // locationDataDao.upsert(data);
+//
+//        var exists = locationDataDao.exists("abc");
+//        var cde = locationDataDao.exists("cde");
+//
+//        var got = locationDataDao.get("abc");
+//
+//        LocationAdapter adapter = new LocationAdapter();
+//        adapter.setHasStableIds(true);
+//        adapter.setLocationData(friends);
+//
+//        recyclerView = findViewById(R.id.friend_list);
+//        recyclerView.setLayoutManager(new LinearLayoutManager(this)); // TODO do I want a custom cicrular layout manager...
+//        recyclerView.setAdapter(adapter);
+        // TODO do I need to remove scrolling?
+
+
+        // SHAREDNOTES CODE
+        var viewModel = new ViewModelProvider(this).get(LocationViewModel.class);
+        var adapter = new LocationAdapter();
+        adapter.setHasStableIds(true);
+        viewModel.getData().observe(this, adapter::setLocationData);
+
+
+
+        recyclerView = findViewById(R.id.friend_list);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(adapter);
+
         loadProfile();
 
         // If nothing saved, launch InputActivity ( Do we want to check UUID or name?)
@@ -55,10 +108,8 @@ public class MainActivity extends AppCompatActivity {
         this.orientation_current = orientation;
 
         TextView orientation_text = findViewById(R.id.orientation_text);
-        TextView cardinal_text = findViewById(R.id.CardinalDirection);
 
         orientation_text.setText(Float.toString(orientation));
-        cardinal_text.setText(CoordinateUtil.cardDirection(orientation));
         updateParentRelDirection();
 
         RotateAnimation rotateAnimation =
@@ -88,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
         //getResources().getDisplayMetrics().density;
 
         //int px = (int) (150*getResources().getDisplayMetrics().density/160);
-        float angle = CoordinateUtil.directionBetweenPoints(loc.first,myFriend.getLat(),loc.second,myFriend.getLong());
+        float angle = CoordinateUtil.directionBetweenPoints(loc.first,myFriend.getLat(),loc.second,myFriend.getLongit());
         point.setX(lh.x_coordinate(angle));
         point.setY(lh.y_coordinate(angle));
 
@@ -145,15 +196,14 @@ public class MainActivity extends AppCompatActivity {
         this.user_UUID = preferences.getString("user_UUID", "");
 
     }
-    private void loadSetOrientation() {
-        SharedPreferences preferences = getSharedPreferences("saved_data", MODE_PRIVATE);
-
-        this.set_orientation = preferences.getFloat("set_orientation", 360);
-
-    }
 
     public void onLaunchInputClicked(View view) {
         Intent intent = new Intent(this, InputActivity.class);
+        startActivity(intent);
+    }
+
+    public void onAddFriendClicked(View view) {
+        Intent intent = new Intent(this, AddFriendActivity.class);
         startActivity(intent);
     }
 

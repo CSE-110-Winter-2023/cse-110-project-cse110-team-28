@@ -12,6 +12,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledFuture;
 
 public class LocationRepository {
+
+    // TODO: FRIEND DATA ONLY COMES IN
+    // TODO: SELF DATA ONLY GOES OUT
     private final LocationDataDao dao;
     private LocationAPI locationAPI;
     private ScheduledFuture<?> poller;
@@ -27,24 +30,29 @@ public class LocationRepository {
      * however will only need to observe this one LiveData object, and don't need to care where
      * it comes from!
      */
-    public LiveData<LocationData> getSynced(String public_code) {
-        var location = new MediatorLiveData<LocationData>();
+//    public LiveData<LocationData> getSynced(String public_code) {
+//        var location = new MediatorLiveData<LocationData>();
+//
+//        Observer<LocationData> updateFromRemote = theirLocation -> {
+//            var ourLocation = location.getValue();
+//            if (theirLocation == null) return; // do nothing
+//            if (ourLocation == null || ourLocation.updated_at < theirLocation.updated_at) {
+//                upsertLocal(theirLocation);
+//            }
+//        };
+//
+//        // If we get a local update, pass it on.
+//        location.addSource(getLocal(public_code), location::postValue);
+//        // If we get a remote update, update the local version (triggering the above observer)
+//        location.addSource(getRemote(public_code), updateFromRemote);
+//
+//        return location;
+//    }
 
-        Observer<LocationData> updateFromRemote = theirLocation -> {
-            var ourLocation = location.getValue();
-            if (theirLocation == null) return; // do nothing
-            if (ourLocation == null || ourLocation.updated_at < theirLocation.updated_at) {
-                upsertLocal(theirLocation);
-            }
-        };
-        
-        // If we get a local update, pass it on.
-        location.addSource(getLocal(public_code), location::postValue);
-        // If we get a remote update, update the local version (triggering the above observer)
-        location.addSource(getRemote(public_code), updateFromRemote);
-
-        return location;
-    }
+//    public void upsertSynced(LocationData data) {
+////        upsertLocal(data);
+////        upsertRemote(data);
+//    }
 
     // Local Methods
     public LiveData<LocationData> getLocal(String public_code) { return dao.get(public_code); }
