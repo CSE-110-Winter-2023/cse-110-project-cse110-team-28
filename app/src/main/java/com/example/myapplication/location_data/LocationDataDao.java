@@ -26,4 +26,7 @@ public abstract class LocationDataDao {
 
     @Delete
     public abstract int delete(LocationData data);
+
+    @Query("DELETE FROM location_data")
+    public abstract void delete_all();
 }
