@@ -67,4 +67,6 @@ public class LocationService implements LocationListener {
         unregisterLocationListener();
         this.locationValue = mockDataSource;
     }
+
+
 }

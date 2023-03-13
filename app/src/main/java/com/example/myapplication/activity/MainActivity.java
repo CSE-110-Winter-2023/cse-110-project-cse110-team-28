@@ -20,6 +20,8 @@ import com.example.myapplication.Friend;
 import com.example.myapplication.LayoutHandler;
 import com.example.myapplication.R;
 
+import org.w3c.dom.Text;
+
 public class MainActivity extends AppCompatActivity {
 
     private LocationGetter locGetter;
@@ -136,6 +138,23 @@ public class MainActivity extends AppCompatActivity {
         TextView uuid_view = findViewById(R.id.uuid_view);
         uuid_view.setText("Your UUID: " + user_UUID);
 
+        boolean gpsstatus = locGetter.checkIfGPSOnline();
+        ImageView red_dot = findViewById(R.id.reddot);
+        ImageView green_dot = findViewById(R.id.greendot);
+        red_dot.setVisibility(View.INVISIBLE);
+        green_dot.setVisibility(View.INVISIBLE);
+        if(gpsstatus == true){
+            //green dot, gps active
+            green_dot.setVisibility(View.VISIBLE);
+        }
+        else{
+            red_dot.setVisibility(View.VISIBLE);
+            //red dot, not active
+        }
+
+
+//        TextView gpsOnline = findViewById(R.id.gpsStatus);
+//        gpsOnline.setText(String.valueOf(gpsstatus));
 
     }
 
@@ -156,5 +175,6 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, InputActivity.class);
         startActivity(intent);
     }
+
 
 }

@@ -7,6 +7,8 @@ public class Friend {
     private String username;
     private String UUID;
 
+    private LocationService locationService;
+
     public Friend(float lat, float longit, String username, String UUID) {
         this.lat = lat;
         this.longit = longit;
