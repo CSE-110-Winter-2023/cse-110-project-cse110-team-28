@@ -2,6 +2,8 @@ package com.example.myapplication.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.content.Intent;
@@ -16,11 +18,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.myapplication.CoordinateUtil;
-import com.example.myapplication.Friend;
+import com.example.myapplication.friends.Friend;
 import com.example.myapplication.LayoutHandler;
 import com.example.myapplication.R;
+import com.example.myapplication.friends.FriendAdapter;
 
 public class MainActivity extends AppCompatActivity {
+
+    public RecyclerView recyclerView;
 
     private LocationGetter locGetter;
     private OrientationGetter orientGetter;
@@ -40,6 +45,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        FriendAdapter adapter = new FriendAdapter();
+        adapter.setHasStableIds(true);
+
+        recyclerView = findViewById(R.id.friend_list);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this)); // TODO do I want a custom cicrular layout manager...
+        recyclerView.setAdapter(adapter);
+        // TODO do I need to remove scrolling?
+
         loadSetOrientation();
         loadProfile();
 
@@ -55,10 +68,8 @@ public class MainActivity extends AppCompatActivity {
         this.orientation_current = orientation;
 
         TextView orientation_text = findViewById(R.id.orientation_text);
-        TextView cardinal_text = findViewById(R.id.CardinalDirection);
 
         orientation_text.setText(Float.toString(orientation));
-        cardinal_text.setText(CoordinateUtil.cardDirection(orientation));
         updateParentRelDirection();
 
         RotateAnimation rotateAnimation =
@@ -88,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
         //getResources().getDisplayMetrics().density;
 
         //int px = (int) (150*getResources().getDisplayMetrics().density/160);
-        float angle = CoordinateUtil.directionBetweenPoints(loc.first,myFriend.getLat(),loc.second,myFriend.getLong());
+        float angle = CoordinateUtil.directionBetweenPoints(loc.first,myFriend.getLat(),loc.second,myFriend.getLongit());
         point.setX(lh.x_coordinate(angle));
         point.setY(lh.y_coordinate(angle));
 
