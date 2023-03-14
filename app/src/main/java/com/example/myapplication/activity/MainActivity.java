@@ -12,6 +12,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.view.animation.Animation;
@@ -58,21 +59,26 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // LAB CODE
-        LocationDataDao locationDataDao = LocationDatabase.provide(this).getDao();
+        LocationDataDao dao = LocationDatabase.provide(this).getDao();
 //
-//        List<LocationData> friends = locationDataDao.getAll().getValue();
+//        List<LocationData> friends = dao.getAll().getValue();
 
-
+//        dao.delete_all();
         // THESE TWO GUYS ARE CURRENTLY IN THE LOCAL DATABASE AND ARE BEING DISPLAYED ON THE HOME SCREEN
-        LocationData data2 = new LocationData("abc", "Bob", 10f, 10f, true);
-        var data = new LocationData("myUUID", "Calvin", 55f, -100f, false);
-        locationDataDao.upsert(data);
-//        // locationDataDao.upsert(data);
+        LocationData data2 = new LocationData("efb71004-d7b5-4067-b3b2-59904b7cda87", "Bob", 10f, 10f, true);
+        // Bob's private code: 82b5ac85-6d9b-4084-8ebd-564363dacccb
+        var data = new LocationData("c4a86ce2-fed4-4f98-bb1c-b5d83c968d93", "Calvin", 55f, -100f, true);
+        // Calvin's private code: 8c89b79c-a03c-4580-b785-9be388e97f66
+
+
+//        dao.upsert(data);
+//        dao.upsert(data2);
+
+
+//        var exists = dao.exists("abc");
+//        var cde = dao.exists("cde");
 //
-//        var exists = locationDataDao.exists("abc");
-//        var cde = locationDataDao.exists("cde");
-//
-//        var got = locationDataDao.get("abc");
+//        var got = dao.get("abc");
 //
 //        LocationAdapter adapter = new LocationAdapter();
 //        adapter.setHasStableIds(true);

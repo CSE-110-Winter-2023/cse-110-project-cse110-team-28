@@ -49,7 +49,6 @@ public class LocationData {
     // Constructor
     public LocationData(@NonNull String public_code, String label, float latitude, float longitude, boolean is_listed_publicly) {
         this.public_code = public_code;
-        this.private_code = UUID.randomUUID().toString(); // Just use another UUID as "password"/ private key
         this.label = label;
         this.latitude = latitude;
         this.longitude = longitude;

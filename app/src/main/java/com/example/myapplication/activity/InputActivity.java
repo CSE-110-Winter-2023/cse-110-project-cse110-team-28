@@ -16,6 +16,7 @@ import java.util.UUID;
 public class InputActivity extends AppCompatActivity {
     private String user_name_string;
     private String user_UUID;
+    private String private_code;
     private String custom_server;
     private SharedPreferences preferences;
 
@@ -28,6 +29,7 @@ public class InputActivity extends AppCompatActivity {
         this.preferences = getSharedPreferences("saved_data", MODE_PRIVATE);
         this.user_name_string = preferences.getString("user_name", "");
         this.user_UUID = preferences.getString("user_UUID", "");
+        this.private_code = preferences.getString("private_code", "");
         this.custom_server = preferences.getString("custom_server", "https://socialcompass.goto.ucsd.edu/");
 
         EditText user_name_text = findViewById(R.id.user_name);
@@ -55,6 +57,10 @@ public class InputActivity extends AppCompatActivity {
         // If no UUID present, generate a new one.
         if (user_UUID.equals("")) {
             user_UUID = UUID.randomUUID().toString();
+        }
+        // Same for private code
+        if (private_code.equals("")) {
+            private_code = UUID.randomUUID().toString(); // TODO TEST THIS - make sure it's not equal to public code
         }
 
         saveCustomServer();
