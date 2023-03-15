@@ -57,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
     float currentDegree = 0.0f;
     private String custom_server = "https://socialcompass.goto.ucsd.edu/";
 
+    //temporary to try to create point far away method
+    private boolean isPointFar = true;
 
 
     LayoutHandler lh = new LayoutHandler();
@@ -73,6 +75,10 @@ public class MainActivity extends AppCompatActivity {
 
         dao = LocationDatabase.provide(this).getDao();
         api = LocationAPI.provide(custom_server);
+
+        //refer
+        ImageView farPoint = findViewById(R.id.purpleDot);
+        farPoint.setVisibility(View.INVISIBLE);
 
         // dao.delete_all();
         // THESE TWO GUYS ARE CURRENTLY IN THE LOCAL DATABASE AND ARE BEING DISPLAYED ON THE HOME SCREEN
@@ -253,6 +259,10 @@ public class MainActivity extends AppCompatActivity {
     public void onAddFriendClicked(View view) {
         Intent intent = new Intent(this, AddFriendActivity.class);
         startActivity(intent);
+    }
+
+    public void pointFarAway(boolean isPointFar){
+
     }
 
 }
