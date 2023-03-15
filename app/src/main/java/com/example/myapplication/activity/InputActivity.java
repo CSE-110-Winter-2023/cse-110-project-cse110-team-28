@@ -80,6 +80,7 @@ public class InputActivity extends AppCompatActivity {
 
         editor.putString("user_name", user_name_string);
         editor.putString("user_UUID", user_UUID);
+        editor.putString("private_code", private_code);
         editor.apply();
     }
 

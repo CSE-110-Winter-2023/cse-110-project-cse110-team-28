@@ -16,6 +16,7 @@ import com.example.myapplication.location_data.LocationDatabase;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
 
 public class AddFriendActivity extends AppCompatActivity {
     private LocationDatabase db = LocationDatabase.provide(this);

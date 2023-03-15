@@ -27,6 +27,7 @@ import com.example.myapplication.R;
 import com.example.myapplication.friends.FriendAdapter;
 import com.example.myapplication.friends.FriendDatabase;
 import com.example.myapplication.friends.FriendListDao;
+import com.example.myapplication.location_data.LocationAPI;
 import com.example.myapplication.location_data.LocationAdapter;
 import com.example.myapplication.location_data.LocationData;
 import com.example.myapplication.location_data.LocationDataDao;
@@ -34,6 +35,9 @@ import com.example.myapplication.location_data.LocationDatabase;
 import com.example.myapplication.location_data.LocationViewModel;
 
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import org.w3c.dom.Text;
 
@@ -44,8 +48,17 @@ public class MainActivity extends AppCompatActivity {
     private LocationGetter locGetter;
     private OrientationGetter orientGetter;
     private float orientation_current;
+
     private String user_UUID;
+    private String user_name;
+    private String private_code;
+    private LocationAPI api;
+    private LocationViewModel viewModel;
+    private LocationDataDao dao;
+    private List<LocationData> friends;
+    private ScheduledExecutorService executor;
     float currentDegree = 0.0f;
+    private String custom_server = "https://socialcompass.goto.ucsd.edu/";
 
 
 
@@ -53,15 +66,16 @@ public class MainActivity extends AppCompatActivity {
 
     Friend myFriend = new Friend(55f, -100f, "Calvin", "myUUID");
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // LAB CODE
-        LocationDataDao dao = LocationDatabase.provide(this).getDao();
-//
-//        List<LocationData> friends = dao.getAll().getValue();
+        loadProfile();
+
+        dao = LocationDatabase.provide(this).getDao();
+        api = LocationAPI.provide(custom_server);
 
         // dao.delete_all();
         // THESE TWO GUYS ARE CURRENTLY IN THE LOCAL DATABASE AND ARE BEING DISPLAYED ON THE HOME SCREEN
@@ -70,28 +84,14 @@ public class MainActivity extends AppCompatActivity {
         var data = new LocationData("c4a86ce2-fed4-4f98-bb1c-b5d83c968d93", "Calvin", 55f, -100f, true);
         // Calvin's private code: 8c89b79c-a03c-4580-b785-9be388e97f66
 
+        // This user has...
+        // public code:
+        // private code:
 
-//        dao.upsert(data);
-//        dao.upsert(data2);
-
-
-//        var exists = dao.exists("abc");
-//        var cde = dao.exists("cde");
-//
-//        var got = dao.get("abc");
-//
-//        LocationAdapter adapter = new LocationAdapter();
-//        adapter.setHasStableIds(true);
-//        adapter.setLocationData(friends);
-//
-//        recyclerView = findViewById(R.id.friend_list);
-//        recyclerView.setLayoutManager(new LinearLayoutManager(this)); // TODO do I want a custom cicrular layout manager...
-//        recyclerView.setAdapter(adapter);
+        // TODO do I want a custom cicrular layout manager...
         // TODO do I need to remove scrolling?
 
-
-        // SHAREDNOTES CODE
-        var viewModel = new ViewModelProvider(this).get(LocationViewModel.class);
+        viewModel = new ViewModelProvider(this).get(LocationViewModel.class);
         var adapter = new LocationAdapter();
         adapter.setHasStableIds(true);
         viewModel.getData().observe(this, adapter::setLocationData);
@@ -102,13 +102,14 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
-        loadProfile();
+
 
         // If nothing saved, launch InputActivity ( Do we want to check UUID or name?)
-        if (user_UUID.equals("")) {
+        if (user_UUID.equals("UUID NOT FOUND") || private_code.equals("PRIVATE CODE NOT FOUND") || user_name.equals("USER NAME NOT FOUND")) {
             Intent intent = new Intent(this, InputActivity.class);
             startActivity(intent);
         }
+
 
     }
 
@@ -160,12 +161,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        executor.shutdown();
         // this.orientGetter.halt();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        Log.e("RESUME", "RESUMED");
 
         // Ask for location permissions
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -203,9 +206,11 @@ public class MainActivity extends AppCompatActivity {
         if(gpsstatus == true){
             //green dot, gps active
             green_dot.setVisibility(View.VISIBLE);
+            Log.d("GPS", "GREEN DOT");
         }
         else{
             red_dot.setVisibility(View.VISIBLE);
+            Log.e("GPD", "RED DOT");
             //red dot, not active
         }
 
@@ -213,12 +218,36 @@ public class MainActivity extends AppCompatActivity {
 //        TextView gpsOnline = findViewById(R.id.gpsStatus);
 //        gpsOnline.setText(String.valueOf(gpsstatus));
 
+        // Every 3 seconds...
+        executor = Executors.newSingleThreadScheduledExecutor();
+        var poller = executor.scheduleAtFixedRate(() -> {
+            var friends = viewModel.getData().getValue();
+
+            // Pull the updated location of all your friends from the server
+            for (var f : friends)
+            {
+                var got = api.get(f.public_code);
+                dao.upsert(got);
+                Log.e("FRIEND: ", got.toString());
+            }
+
+            // Upload your current location to the server
+            var location = locGetter.getLocation();
+            var to_upload = new LocationData(this.user_UUID, this.user_name, location.first, location.second, false);
+            to_upload.private_code = this.private_code;
+            api.put(to_upload);
+
+        }, 9, 3, TimeUnit.SECONDS);
+
     }
 
     private void loadProfile() {
         SharedPreferences preferences = getSharedPreferences("saved_data", MODE_PRIVATE);
 
-        this.user_UUID = preferences.getString("user_UUID", "");
+        this.user_name = preferences.getString("user_name", "USERNAME NOT FOUND");
+        this.user_UUID = preferences.getString("user_UUID", "UUID NOT FOUND");
+        this.custom_server = preferences.getString("custom_server", "https://socialcompass.goto.ucsd.edu/");
+        this.private_code = preferences.getString("private_code", "PRIVATE CODE NOT FOUND");
 
     }
 
