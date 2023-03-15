@@ -10,14 +10,14 @@ import java.util.List;
 
 public class LocationViewModel extends AndroidViewModel {
     private LiveData<List<LocationData>> data;
-    private final LocationRepository repo;
+    private final LocationDataDao dao;
+//    private final LocationRepository repo;
 
     public LocationViewModel(@NonNull Application application) {
         super(application);
         var context = application.getApplicationContext();
         var db = LocationDatabase.provide(context);
-        var dao = db.getDao();
-        this.repo = new LocationRepository(dao);
+        this.dao = db.getDao();
     }
 
     /**
@@ -26,7 +26,7 @@ public class LocationViewModel extends AndroidViewModel {
      */
     public LiveData<List<LocationData>> getData() {
         if (data == null) {
-            data = repo.getAllLocal();
+            data = dao.getAll();
         }
         return data;
     }
