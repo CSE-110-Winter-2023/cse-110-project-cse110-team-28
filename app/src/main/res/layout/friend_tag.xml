@@ -13,5 +13,6 @@
         app:layout_constraintCircleAngle="90"
         app:layout_constraintCircleRadius="150dp"
         tools:layout_editor_absoluteX="171dp"
-        tools:layout_editor_absoluteY="62dp" />
+        tools:layout_editor_absoluteY="62dp"
+        tools:ignore="MissingConstraints" />
 </androidx.constraintlayout.widget.ConstraintLayout>
