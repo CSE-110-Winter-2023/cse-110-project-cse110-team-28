@@ -33,6 +33,8 @@ import com.example.myapplication.location_data.LocationDatabase;
 import com.example.myapplication.location_data.LocationViewModel;
 
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.w3c.dom.Text;
 
@@ -45,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
     private float orientation_current;
     private String user_UUID;
     float currentDegree = 0.0f;
+
+    boolean gpsstatus;
 
 
 
@@ -154,6 +158,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+
         // this.orientGetter.halt();
     }
 
@@ -189,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
         TextView uuid_view = findViewById(R.id.uuid_view);
         uuid_view.setText("Your UUID: " + user_UUID);
 
-        boolean gpsstatus = locGetter.checkIfGPSOnline();
+        gpsstatus  = locGetter.checkIfGPSOnline();
         ImageView red_dot = findViewById(R.id.reddot);
         ImageView green_dot = findViewById(R.id.greendot);
         red_dot.setVisibility(View.INVISIBLE);
@@ -202,6 +207,7 @@ public class MainActivity extends AppCompatActivity {
             red_dot.setVisibility(View.VISIBLE);
             //red dot, not active
         }
+
 
 
 //        TextView gpsOnline = findViewById(R.id.gpsStatus);

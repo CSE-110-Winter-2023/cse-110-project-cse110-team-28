@@ -2,13 +2,17 @@ package com.example.myapplication.activity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
+import android.location.GnssStatus;
 import android.location.Location;
 import android.location.LocationManager;
 import android.util.Pair;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
 import com.example.myapplication.LocationService;
@@ -23,6 +27,7 @@ public class ActualLocation implements LocationGetter {
     private double longitude;
 
     private LocationManager locationManager;
+    private BroadcastReceiver mGpsSwitchStateReceiver;
 
     ActualLocation(MainActivity activity) {
 
@@ -45,9 +50,34 @@ public class ActualLocation implements LocationGetter {
         return this.location;
     }
 
+//    @SuppressLint("MissingPermission")
     public boolean checkIfGPSOnline() {
+//        final boolean[] retval = {false};
+//        BroadcastReceiver mGpsSwitchStateReceiver = new BroadcastReceiver() {
+//            @Override
+//            public void onReceive(Context context, Intent intent) {
+//
+//                if (intent.getAction().matches("android.location.PROVIDERS_CHANGED")) {
+//                    // Make an action or refresh an already managed state.
+//                    retval[0] = true;
+//                }
+//                else{
+//                    retval[0] = false;
+//                }
+//            }
+//        };
+
+        GnssStatus.Callback mGnssStatusCallback = new GnssStatus.Callback() {
+            @Override
+            public void onSatelliteStatusChanged(@NonNull GnssStatus status) {
+                super.onSatelliteStatusChanged(status);
+
+            }
+        };
         boolean mGPS = this.locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+
         return mGPS;
+//        return retval[0];
     }
 
     //returns last known location as a pair of latitude,longitude
