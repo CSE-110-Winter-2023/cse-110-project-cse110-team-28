@@ -31,22 +31,7 @@ public class LocationViewModel extends AndroidViewModel {
         return data;
     }
 
-    /**
-     * Open a note in the database. If the note does not exist, create it.
-     * @param title the title of the note
-     * @return a LiveData object that will be updated when this note changes.
-     * TODO
-     */
-    public LiveData<LocationData> getOrCreateNote(String title) {
-//        if (!repo.existsLocal(title)) {
-//            var note = new LocationData(title, "");
-//            repo.upsertLocal(note);
-//        }
-//
-//        return repo.getLocal(title);
-        return null;
-    }
-
-    public void delete(LocationData data) { repo.deleteLocal(data); }
+    // We probably don't need to delete friends
+//    public void delete(LocationData data) { repo.deleteLocal(data); }
 
 }

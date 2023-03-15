@@ -84,8 +84,8 @@ public class MainActivity extends AppCompatActivity {
 
         // TODO extract these methods too once you've got MainActivity figured out
 
-
         viewModel = new ViewModelProvider(this).get(LocationViewModel.class);
+//        viewModel.getData().observe(this, adapter::setLocationData);
         viewModel.getData().observe(this, this::updateCompass);
 
         // If nothing saved, launch InputActivity ( Do we want to check UUID or name?)
@@ -97,9 +97,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateCompass(List<LocationData> friends){
         if (friends == null) { return; };
-
-
-
 
         var friend_list = (ConstraintLayout) findViewById(R.id.friend_list);
         friend_list.removeAllViews();
@@ -150,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
     public void updateLocation(Pair<Double, Double> loc) {
         TextView location_text = findViewById(R.id.location_text);
 
@@ -174,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         executor.shutdown();
-        // this.orientGetter.halt();
+        this.orientGetter.halt();
     }
 
     @Override
@@ -187,6 +185,7 @@ public class MainActivity extends AppCompatActivity {
         ImageView point = findViewById(R.id.point);
         point.setVisibility(View.INVISIBLE);
 
+        // set up Location and Orientation services
         orientGetter = new ActualOrientation(this);
         locGetter = new ActualLocation(this);
 
@@ -194,6 +193,7 @@ public class MainActivity extends AppCompatActivity {
         TextView uuid_view = findViewById(R.id.uuid_view);
         uuid_view.setText("Your UUID: " + user_UUID);
 
+        // GPS status - pull out to separate method probably
         boolean gpsstatus = locGetter.checkIfGPSOnline();
         ImageView red_dot = findViewById(R.id.reddot);
         ImageView green_dot = findViewById(R.id.greendot);
