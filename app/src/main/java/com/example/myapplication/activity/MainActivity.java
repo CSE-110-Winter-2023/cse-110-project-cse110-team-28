@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
 //
 //        List<LocationData> friends = dao.getAll().getValue();
 
-//        dao.delete_all();
+        // dao.delete_all();
         // THESE TWO GUYS ARE CURRENTLY IN THE LOCAL DATABASE AND ARE BEING DISPLAYED ON THE HOME SCREEN
         LocationData data2 = new LocationData("efb71004-d7b5-4067-b3b2-59904b7cda87", "Bob", 10f, 10f, true);
         // Bob's private code: 82b5ac85-6d9b-4084-8ebd-564363dacccb
