@@ -7,8 +7,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.fail;
 
-import android.util.Log;
-
 import com.example.myapplication.location_data.LocationAPI;
 import com.example.myapplication.location_data.LocationData;
 
@@ -16,7 +14,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.time.Instant;
-import java.util.Random;
 
 public class LocationAPITest {
     LocationAPI api = LocationAPI.provide();

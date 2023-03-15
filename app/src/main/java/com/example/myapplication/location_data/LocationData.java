@@ -9,7 +9,6 @@ import com.google.gson.Gson;
 import com.google.gson.annotations.JsonAdapter;
 
 import java.time.Instant;
-import java.util.UUID;
 
 
 /*
@@ -29,10 +28,10 @@ public class LocationData {
     public String label;
 
 
-    public float latitude;
+    public double latitude;
 
 
-    public float longitude;
+    public double longitude;
 
     @PatchExclude
     public boolean is_listed_publicly;
@@ -47,9 +46,8 @@ public class LocationData {
     public long updated_at = 0;
 
     // Constructor
-    public LocationData(@NonNull String public_code, String label, float latitude, float longitude, boolean is_listed_publicly) {
+    public LocationData(@NonNull String public_code, String label, double latitude, double longitude, boolean is_listed_publicly) {
         this.public_code = public_code;
-        this.private_code = UUID.randomUUID().toString(); // Just use another UUID as "password"/ private key
         this.label = label;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -59,7 +57,23 @@ public class LocationData {
         this.updated_at = this.created_at;
     }
 
+
+
     public static LocationData fromJSON(String json) { return new Gson().fromJson(json, LocationData.class); }
 
     public String toJSON() { return new Gson().toJson(this); }
+
+    @Override
+    public String toString() {
+        return "LocationData{" +
+                "public_code='" + public_code + '\'' +
+                ", private_code='" + private_code + '\'' +
+                ", label='" + label + '\'' +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                ", is_listed_publicly=" + is_listed_publicly +
+                ", created_at=" + created_at +
+                ", updated_at=" + updated_at +
+                '}';
+    }
 }

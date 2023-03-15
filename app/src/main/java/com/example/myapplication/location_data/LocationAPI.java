@@ -98,7 +98,7 @@ public class LocationAPI{
             LocationData toReturn = LocationData.fromJSON(body);
             return toReturn;
         } catch (Exception e) {
-            // e.printStackTrace();
+            e.printStackTrace();
             return null;
         }
     }
