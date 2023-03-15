@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.myapplication.CoordinateUtil;
+import com.example.myapplication.ZoomHandler;
 import com.example.myapplication.friends.Friend;
 import com.example.myapplication.LayoutHandler;
 import com.example.myapplication.R;
@@ -32,6 +33,7 @@ import com.example.myapplication.location_data.LocationViewModel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -57,12 +59,13 @@ public class MainActivity extends AppCompatActivity {
     float currentDegree = 0.0f;
     private String custom_server = "https://socialcompass.goto.ucsd.edu/";
 
-
+    LinkedList<Friend> friends = new LinkedList<Friend>();
 
     LayoutHandler lh = new LayoutHandler();
 
     Friend myFriend = new Friend(55f, -100f, "Calvin", "myUUID");
 
+    ZoomHandler zoomHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +73,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         loadProfile();
+
+        friends.add(myFriend);
+
+        zoomHandler = new ZoomHandler(this);
 
         dao = LocationDatabase.provide(this).getDao();
         api = LocationAPI.provide(custom_server);
@@ -146,9 +153,16 @@ public class MainActivity extends AppCompatActivity {
         point.setY(lh.y_coordinate(angle));
 
         // TODO Update all friend locations too
+
         location_text.setText(Double.toString(loc.first) + " , " + Double.toString(loc.second));
         updateParentRelDirection();
         point.setVisibility(View.VISIBLE);
+    }
+
+    void updateFriendLocations() {
+        for (Friend friend : friends) {
+
+        }
     }
 
     @Override
@@ -164,6 +178,7 @@ public class MainActivity extends AppCompatActivity {
 
         checkLocationPermissions();
         loadProfile();
+
 
         ImageView point = findViewById(R.id.point);
         point.setVisibility(View.INVISIBLE);
@@ -243,6 +258,14 @@ public class MainActivity extends AppCompatActivity {
         this.custom_server = preferences.getString("custom_server", "https://socialcompass.goto.ucsd.edu/");
         this.private_code = preferences.getString("private_code", "PRIVATE CODE NOT FOUND");
 
+    }
+
+    public void onZoomInClicked(View view) {
+        zoomHandler.onZoomIn();
+    }
+
+    public void onZoomOutClicked(View view) {
+        zoomHandler.onZoomOut();
     }
 
     public void onLaunchInputClicked(View view) {
