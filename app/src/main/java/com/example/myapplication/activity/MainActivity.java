@@ -17,12 +17,9 @@ import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.myapplication.CoordinateUtil;
@@ -37,7 +34,6 @@ import com.example.myapplication.location_data.LocationDatabase;
 import com.example.myapplication.location_data.LocationViewModel;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -45,11 +41,12 @@ import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
 
-    public RecyclerView recyclerView;
 
     private LocationGetter locGetter;
     private OrientationGetter orientGetter;
     private float orientation_current;
+
+    LocationAdapter adapter;
 
     private String user_UUID;
     private String user_name;
@@ -91,14 +88,13 @@ public class MainActivity extends AppCompatActivity {
         // public code: 68591d92-f36a-4b8a-89f1-702236f92848
         // private code: bacae4bd-6a4c-48f5-b3fc-2df94cb37f24
 
-        // TODO do I want a custom cicrular layout manager...
-        // TODO do I need to remove scrolling?
         // TODO extract these methods too once you've got MainActivity figured out
 
+//        adapter = new LocationAdapter();
+//        adapter.setHasStableIds(true);
+
         viewModel = new ViewModelProvider(this).get(LocationViewModel.class);
-        var adapter = new LocationAdapter();
-        adapter.setHasStableIds(true);
-        viewModel.getData().observe(this, adapter::setLocationData);
+//        viewModel.getData().observe(this, adapter::setLocationData);
         viewModel.getData().observe(this, this::updateCompass);
 
         // If nothing saved, launch InputActivity ( Do we want to check UUID or name?)
@@ -112,6 +108,7 @@ public class MainActivity extends AppCompatActivity {
         if (friends == null) { return; };
 
         var friend_list = (ConstraintLayout) findViewById(R.id.friend_list);
+        friend_list.removeAllViews();
         for (int i = 0; i < friends.size(); i ++ ) {
             // TODO: Calculate the correct angle (in degrees) to use. Changes as we rotate.
             // TODO: Calculate the correct radius to use. Changes we zoom in/out. Edge of the circle is at: TODO
@@ -120,6 +117,8 @@ public class MainActivity extends AppCompatActivity {
             View inflatedView = LayoutInflater.from(this).inflate(R.layout.friend_tag, friend_list, false);
             TextView friend = inflatedView.findViewById(R.id.name_tag);
             friend.setText(friends.get(i).label);
+
+            // Currently just has all your friends spaced around the circle.
             ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) inflatedView.getLayoutParams();
             params.circleAngle = 30 * i;
             params.circleRadius = 200;
@@ -252,8 +251,6 @@ public class MainActivity extends AppCompatActivity {
                 dao.upsert(got);
                 Log.e("FRIEND: ", got.toString());
             }
-
-
 
         }, 9, 3, TimeUnit.SECONDS);
     }
