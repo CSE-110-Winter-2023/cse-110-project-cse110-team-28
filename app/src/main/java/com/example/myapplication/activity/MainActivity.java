@@ -12,6 +12,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Pair;
 import android.view.View;
 import android.view.animation.Animation;
@@ -108,7 +109,15 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, InputActivity.class);
             startActivity(intent);
         }
+        final Handler handler = new Handler();
+        final int delay = 1000; // 1000 milliseconds == 1 second
 
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                GPSCheck();
+                handler.postDelayed(this, delay);
+            }
+        }, delay);
     }
 
     public void updateOrientation(float orientation) {
@@ -195,21 +204,7 @@ public class MainActivity extends AppCompatActivity {
         TextView uuid_view = findViewById(R.id.uuid_view);
         uuid_view.setText("Your UUID: " + user_UUID);
 
-        gpsStatus  = locGetter.checkIfGPSOnline();
-        networkStatus = locGetter.checkIfNetworkOnline();
-
-        ImageView red_dot = findViewById(R.id.reddot);
-        ImageView green_dot = findViewById(R.id.greendot);
-        red_dot.setVisibility(View.INVISIBLE);
-        green_dot.setVisibility(View.INVISIBLE);
-        if(gpsStatus && networkStatus){
-            //green dot, gps/network active
-            green_dot.setVisibility(View.VISIBLE);
-        }
-        else{
-            red_dot.setVisibility(View.VISIBLE);
-            //red dot, not active
-        }
+        GPSCheck();
 
 
 
@@ -233,6 +228,23 @@ public class MainActivity extends AppCompatActivity {
     public void onAddFriendClicked(View view) {
         Intent intent = new Intent(this, AddFriendActivity.class);
         startActivity(intent);
+    }
+
+    public void GPSCheck(){
+        gpsStatus  = locGetter.checkIfGPSOnline();
+        networkStatus = locGetter.checkIfNetworkOnline();
+        ImageView red_dot = findViewById(R.id.reddot);
+        ImageView green_dot = findViewById(R.id.greendot);
+        red_dot.setVisibility(View.INVISIBLE);
+        green_dot.setVisibility(View.INVISIBLE);
+        if(gpsStatus && networkStatus){
+            //green dot, gps/network active
+            green_dot.setVisibility(View.VISIBLE);
+        }
+        else{
+            red_dot.setVisibility(View.VISIBLE);
+            //red dot, not active
+        }
     }
 
 
