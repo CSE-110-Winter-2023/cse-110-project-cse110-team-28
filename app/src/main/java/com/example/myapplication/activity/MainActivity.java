@@ -30,6 +30,8 @@ import com.example.myapplication.location_data.LocationDataDao;
 import com.example.myapplication.location_data.LocationDatabase;
 import com.example.myapplication.location_data.LocationViewModel;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -50,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
     private LocationDataDao dao;
     private LocationViewModel viewModel;
 
-    private List<LocationData> friends;
+
     private ScheduledExecutorService executor;
     float currentDegree = 0.0f;
     private String custom_server = "https://socialcompass.goto.ucsd.edu/";
@@ -209,7 +211,16 @@ public class MainActivity extends AppCompatActivity {
         // Every 3 seconds...
         executor = Executors.newSingleThreadScheduledExecutor();
         var poller = executor.scheduleAtFixedRate(() -> {
-            var friends = viewModel.getData().getValue();
+            var temp = viewModel.getData().getValue();
+            List<LocationData> friends = new ArrayList<>(temp);
+
+            Log.e("POLLER", "BEGIN");
+
+            // Upload your current location to the server
+            var location = locGetter.getLocation();
+            var to_upload = new LocationData(this.user_UUID, this.user_name, location.first, location.second, false);
+            to_upload.private_code = this.private_code;
+            api.put(to_upload);
 
             // Pull the updated location of all your friends from the server
             for (var f : friends)
@@ -219,11 +230,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("FRIEND: ", got.toString());
             }
 
-            // Upload your current location to the server
-            var location = locGetter.getLocation();
-            var to_upload = new LocationData(this.user_UUID, this.user_name, location.first, location.second, false);
-            to_upload.private_code = this.private_code;
-            api.put(to_upload);
+
 
         }, 9, 3, TimeUnit.SECONDS);
     }
