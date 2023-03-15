@@ -2,11 +2,8 @@ package com.example.myapplication.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.content.Intent;
@@ -27,7 +24,6 @@ import com.example.myapplication.friends.Friend;
 import com.example.myapplication.LayoutHandler;
 import com.example.myapplication.R;
 import com.example.myapplication.location_data.LocationAPI;
-import com.example.myapplication.location_data.LocationAdapter;
 import com.example.myapplication.location_data.LocationData;
 import com.example.myapplication.location_data.LocationDataDao;
 import com.example.myapplication.location_data.LocationDatabase;
@@ -45,8 +41,6 @@ public class MainActivity extends AppCompatActivity {
     private LocationGetter locGetter;
     private OrientationGetter orientGetter;
     private float orientation_current;
-
-    LocationAdapter adapter;
 
     private String user_UUID;
     private String user_name;
@@ -90,11 +84,8 @@ public class MainActivity extends AppCompatActivity {
 
         // TODO extract these methods too once you've got MainActivity figured out
 
-//        adapter = new LocationAdapter();
-//        adapter.setHasStableIds(true);
 
         viewModel = new ViewModelProvider(this).get(LocationViewModel.class);
-//        viewModel.getData().observe(this, adapter::setLocationData);
         viewModel.getData().observe(this, this::updateCompass);
 
         // If nothing saved, launch InputActivity ( Do we want to check UUID or name?)
