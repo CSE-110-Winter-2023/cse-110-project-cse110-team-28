@@ -83,4 +83,8 @@ public class AddFriendActivity extends AppCompatActivity {
 
         finish();
     }
+
+    public void onBackButtonClicked(View view) {
+        finish();
+    }
 }

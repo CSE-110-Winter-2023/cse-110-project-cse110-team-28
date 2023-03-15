@@ -168,7 +168,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        Log.e("RESUME", "RESUMED");
 
         // Ask for location permissions
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -206,11 +205,9 @@ public class MainActivity extends AppCompatActivity {
         if(gpsstatus == true){
             //green dot, gps active
             green_dot.setVisibility(View.VISIBLE);
-            Log.d("GPS", "GREEN DOT");
         }
-        else{
+        else{ 
             red_dot.setVisibility(View.VISIBLE);
-            Log.e("GPD", "RED DOT");
             //red dot, not active
         }
 
