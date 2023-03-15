@@ -109,11 +109,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateCompass(List<LocationData> friends){
-        Log.e("COMPASS", "UPDATED");
         if (friends == null) { return; };
 
         var friend_list = (ConstraintLayout) findViewById(R.id.friend_list);
         for (int i = 0; i < friends.size(); i ++ ) {
+            // TODO: Calculate the correct angle (in degrees) to use. Changes as we rotate.
+            // TODO: Calculate the correct radius to use. Changes we zoom in/out. Edge of the circle is at: TODO
+
+
             View inflatedView = LayoutInflater.from(this).inflate(R.layout.friend_tag, friend_list, false);
             TextView friend = inflatedView.findViewById(R.id.name_tag);
             friend.setText(friends.get(i).label);

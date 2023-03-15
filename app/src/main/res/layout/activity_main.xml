@@ -145,20 +145,7 @@
         app:layout_constraintDimensionRatio="1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:id="@+id/test_tag"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="AAAA"
-            app:layout_constraintCircle="@+id/friend_list"
-            app:layout_constraintCircleAngle="70"
-            app:layout_constraintCircleRadius="150dp"
-            tools:layout_constraintCircle="@+id/friend_list"
-            tools:layout_editor_absoluteX="321dp"
-            tools:layout_editor_absoluteY="191dp" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <Button
         android:id="@+id/add_friend_btn"
