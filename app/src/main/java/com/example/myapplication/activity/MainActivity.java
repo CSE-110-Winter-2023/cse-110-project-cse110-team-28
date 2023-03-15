@@ -10,7 +10,6 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Pair;
@@ -24,9 +23,6 @@ import com.example.myapplication.CoordinateUtil;
 import com.example.myapplication.friends.Friend;
 import com.example.myapplication.LayoutHandler;
 import com.example.myapplication.R;
-import com.example.myapplication.friends.FriendAdapter;
-import com.example.myapplication.friends.FriendDatabase;
-import com.example.myapplication.friends.FriendListDao;
 import com.example.myapplication.location_data.LocationAPI;
 import com.example.myapplication.location_data.LocationAdapter;
 import com.example.myapplication.location_data.LocationData;
@@ -38,8 +34,6 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-
-import org.w3c.dom.Text;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -53,8 +47,9 @@ public class MainActivity extends AppCompatActivity {
     private String user_name;
     private String private_code;
     private LocationAPI api;
-    private LocationViewModel viewModel;
     private LocationDataDao dao;
+    private LocationViewModel viewModel;
+
     private List<LocationData> friends;
     private ScheduledExecutorService executor;
     float currentDegree = 0.0f;
@@ -85,24 +80,21 @@ public class MainActivity extends AppCompatActivity {
         // Calvin's private code: 8c89b79c-a03c-4580-b785-9be388e97f66
 
         // This user has...
-        // public code:
-        // private code:
+        // public code: 68591d92-f36a-4b8a-89f1-702236f92848
+        // private code: bacae4bd-6a4c-48f5-b3fc-2df94cb37f24
 
         // TODO do I want a custom cicrular layout manager...
         // TODO do I need to remove scrolling?
+        // TODO extract these methods too once you've got MainActivity figured out
 
         viewModel = new ViewModelProvider(this).get(LocationViewModel.class);
         var adapter = new LocationAdapter();
         adapter.setHasStableIds(true);
         viewModel.getData().observe(this, adapter::setLocationData);
 
-
-
         recyclerView = findViewById(R.id.friend_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
-
-
 
         // If nothing saved, launch InputActivity ( Do we want to check UUID or name?)
         if (user_UUID.equals("UUID NOT FOUND") || private_code.equals("PRIVATE CODE NOT FOUND") || user_name.equals("USER NAME NOT FOUND")) {
@@ -129,7 +121,6 @@ public class MainActivity extends AppCompatActivity {
         this.currentDegree = -1*(this.orientation_current);
         ImageView imageView = findViewById(R.id.compassImg);
         imageView.startAnimation(rotateAnimation);
-
 
     }
 
@@ -169,27 +160,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        // Ask for location permissions
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
-                        != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    200);
-        }
-
+        checkLocationPermissions();
         loadProfile();
+
         ImageView point = findViewById(R.id.point);
         point.setVisibility(View.INVISIBLE);
-        // When returning from InputActivity, check for mocked orientation - SHOULDN'T BE MOCKED
-//        loadSetOrientation();
-//
-//        if (this.set_orientation == 360) {
-//            orientGetter = new ActualOrientation(this);
-//        }
-//        else {
-//            orientGetter = new SetOrientation(this, set_orientation);
-//        }
+
         orientGetter = new ActualOrientation(this);
         locGetter = new ActualLocation(this);
 
@@ -206,7 +182,7 @@ public class MainActivity extends AppCompatActivity {
             //green dot, gps active
             green_dot.setVisibility(View.VISIBLE);
         }
-        else{ 
+        else{
             red_dot.setVisibility(View.VISIBLE);
             //red dot, not active
         }
@@ -215,6 +191,21 @@ public class MainActivity extends AppCompatActivity {
 //        TextView gpsOnline = findViewById(R.id.gpsStatus);
 //        gpsOnline.setText(String.valueOf(gpsstatus));
 
+        setUpLocationExecutor();
+
+    }
+
+    private void checkLocationPermissions() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    200);
+        }
+    }
+
+    private void setUpLocationExecutor() {
         // Every 3 seconds...
         executor = Executors.newSingleThreadScheduledExecutor();
         var poller = executor.scheduleAtFixedRate(() -> {
@@ -235,7 +226,6 @@ public class MainActivity extends AppCompatActivity {
             api.put(to_upload);
 
         }, 9, 3, TimeUnit.SECONDS);
-
     }
 
     private void loadProfile() {
