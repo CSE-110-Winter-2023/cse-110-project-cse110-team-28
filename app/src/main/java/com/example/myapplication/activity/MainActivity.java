@@ -107,21 +107,27 @@ public class MainActivity extends AppCompatActivity {
     private void updateCompass(List<LocationData> friends){
         if (friends == null) { return; };
 
+
+
+
         var friend_list = (ConstraintLayout) findViewById(R.id.friend_list);
         friend_list.removeAllViews();
         for (int i = 0; i < friends.size(); i ++ ) {
             // TODO: Calculate the correct angle (in degrees) to use. Changes as we rotate.
             // TODO: Calculate the correct radius to use. Changes we zoom in/out. Edge of the circle is at: TODO
 
+            LocationData curr = friends.get(i);
+            var curr_loc = locGetter.getLocation();
 
-            View inflatedView = LayoutInflater.from(this).inflate(R.layout.friend_tag, friend_list, false);
+
+                    View inflatedView = LayoutInflater.from(this).inflate(R.layout.friend_tag, friend_list, false);
             TextView friend = inflatedView.findViewById(R.id.name_tag);
             friend.setText(friends.get(i).label);
 
             // Currently just has all your friends spaced around the circle.
             ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) inflatedView.getLayoutParams();
-            params.circleAngle = 30 * i;
-            params.circleRadius = 200;
+            params.circleAngle = 60 * i;
+            params.circleRadius = 300;
             params.circleConstraint = R.id.friend_list;
 
             inflatedView.setLayoutParams(params);
