@@ -14,6 +14,7 @@ import android.util.Pair;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+import androidx.core.location.GnssStatusCompat;
 
 import com.example.myapplication.LocationService;
 
@@ -66,18 +67,12 @@ public class ActualLocation implements LocationGetter {
 //                }
 //            }
 //        };
+        return this.locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
-        GnssStatus.Callback mGnssStatusCallback = new GnssStatus.Callback() {
-            @Override
-            public void onSatelliteStatusChanged(@NonNull GnssStatus status) {
-                super.onSatelliteStatusChanged(status);
+    }
 
-            }
-        };
-        boolean mGPS = this.locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-
-        return mGPS;
-//        return retval[0];
+    public boolean checkIfNetworkOnline(){
+        return this.locationManager.isProviderEnabled(LocationManager. NETWORK_PROVIDER ) ;
     }
 
     //returns last known location as a pair of latitude,longitude

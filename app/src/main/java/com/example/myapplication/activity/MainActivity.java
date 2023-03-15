@@ -48,7 +48,8 @@ public class MainActivity extends AppCompatActivity {
     private String user_UUID;
     float currentDegree = 0.0f;
 
-    boolean gpsstatus;
+    boolean gpsStatus;
+    boolean networkStatus;
 
 
 
@@ -194,13 +195,15 @@ public class MainActivity extends AppCompatActivity {
         TextView uuid_view = findViewById(R.id.uuid_view);
         uuid_view.setText("Your UUID: " + user_UUID);
 
-        gpsstatus  = locGetter.checkIfGPSOnline();
+        gpsStatus  = locGetter.checkIfGPSOnline();
+        networkStatus = locGetter.checkIfNetworkOnline();
+
         ImageView red_dot = findViewById(R.id.reddot);
         ImageView green_dot = findViewById(R.id.greendot);
         red_dot.setVisibility(View.INVISIBLE);
         green_dot.setVisibility(View.INVISIBLE);
-        if(gpsstatus == true){
-            //green dot, gps active
+        if(gpsStatus && networkStatus){
+            //green dot, gps/network active
             green_dot.setVisibility(View.VISIBLE);
         }
         else{
@@ -231,5 +234,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, AddFriendActivity.class);
         startActivity(intent);
     }
+
+
 
 }
