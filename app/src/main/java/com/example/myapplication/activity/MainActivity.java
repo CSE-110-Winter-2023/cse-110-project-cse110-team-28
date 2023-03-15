@@ -1,6 +1,8 @@
 package com.example.myapplication.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -13,10 +15,14 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Pair;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.myapplication.CoordinateUtil;
@@ -93,18 +99,32 @@ public class MainActivity extends AppCompatActivity {
         var adapter = new LocationAdapter();
         adapter.setHasStableIds(true);
         viewModel.getData().observe(this, adapter::setLocationData);
-
-        recyclerView = findViewById(R.id.friend_list);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(adapter);
+        viewModel.getData().observe(this, this::updateCompass);
 
         // If nothing saved, launch InputActivity ( Do we want to check UUID or name?)
         if (user_UUID.equals("UUID NOT FOUND") || private_code.equals("PRIVATE CODE NOT FOUND") || user_name.equals("USER NAME NOT FOUND")) {
             Intent intent = new Intent(this, InputActivity.class);
             startActivity(intent);
         }
+    }
 
+    private void updateCompass(List<LocationData> friends){
+        Log.e("COMPASS", "UPDATED");
+        if (friends == null) { return; };
 
+        var friend_list = (ConstraintLayout) findViewById(R.id.friend_list);
+        for (int i = 0; i < friends.size(); i ++ ) {
+            View inflatedView = LayoutInflater.from(this).inflate(R.layout.friend_tag, friend_list, false);
+            TextView friend = inflatedView.findViewById(R.id.name_tag);
+            friend.setText(friends.get(i).label);
+            ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) inflatedView.getLayoutParams();
+            params.circleAngle = 30 * i;
+            params.circleRadius = 200;
+            params.circleConstraint = R.id.friend_list;
+
+            inflatedView.setLayoutParams(params);
+            friend_list.addView(inflatedView);
+        }
     }
 
     public void updateOrientation(float orientation) {

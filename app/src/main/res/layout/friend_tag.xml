@@ -7,11 +7,11 @@
 
     <TextView
         android:id="@+id/name_tag"
-        android:layout_width="66dp"
-        android:layout_height="19dp"
-        android:hint="username"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        app:layout_constraintCircleAngle="90"
+        app:layout_constraintCircleRadius="150dp"
+        tools:layout_editor_absoluteX="171dp"
+        tools:layout_editor_absoluteY="62dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

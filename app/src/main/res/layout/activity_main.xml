@@ -134,16 +134,31 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView2"
         app:srcCompat="@drawable/reddot" />
-    <androidx.recyclerview.widget.RecyclerView
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/friend_list"
         android:layout_width="400dp"
-        android:layout_height="410dp"
+        android:layout_height="0dp"
         android:layout_marginTop="203dp"
         android:layout_marginBottom="306dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/test_tag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="AAAA"
+            app:layout_constraintCircle="@+id/friend_list"
+            app:layout_constraintCircleAngle="70"
+            app:layout_constraintCircleRadius="150dp"
+            tools:layout_constraintCircle="@+id/friend_list"
+            tools:layout_editor_absoluteX="321dp"
+            tools:layout_editor_absoluteY="191dp" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <Button
         android:id="@+id/add_friend_btn"
