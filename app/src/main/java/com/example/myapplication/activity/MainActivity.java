@@ -10,6 +10,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.opengl.Visibility;
+import android.os.Handler;
+import android.util.Log;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Pair;
@@ -51,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
     private LocationDataDao dao;
     private LocationViewModel viewModel;
 
+    private boolean gpsStatus;
 
     private ScheduledExecutorService executor;
     float currentDegree = 0.0f;
@@ -92,6 +95,15 @@ public class MainActivity extends AppCompatActivity {
         // public code: 68591d92-f36a-4b8a-89f1-702236f92848
         // private code: bacae4bd-6a4c-48f5-b3fc-2df94cb37f24
 
+        final Handler handler = new Handler();
+        final int delay = 5000; // 1000 milliseconds == 1 second
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                GPSCheck();
+
+                handler.postDelayed(this, delay);
+            }
+        }, delay);
     }
 
     private void setUpDatabases() {
@@ -223,20 +235,7 @@ public class MainActivity extends AppCompatActivity {
         TextView uuid_view = findViewById(R.id.uuid_view);
         uuid_view.setText("Your UUID: " + user_UUID);
 
-        // GPS status - pull out to separate method probably
-        boolean gpsstatus = locGetter.checkIfGPSOnline();
-        ImageView red_dot = findViewById(R.id.reddot);
-        ImageView green_dot = findViewById(R.id.greendot);
-        red_dot.setVisibility(View.INVISIBLE);
-        green_dot.setVisibility(View.INVISIBLE);
-        if(gpsstatus == true){
-            //green dot, gps active
-            green_dot.setVisibility(View.VISIBLE);
-        }
-        else{
-            red_dot.setVisibility(View.VISIBLE);
-            //red dot, not active
-        }
+        GPSCheck();
 
 
 //        TextView gpsOnline = findViewById(R.id.gpsStatus);
@@ -302,6 +301,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+
     public void onZoomInClicked(View view) {
        zh.onZoomIn();
        updateCompass(viewModel.getData().getValue());
@@ -310,6 +310,43 @@ public class MainActivity extends AppCompatActivity {
     public void onZoomOutClicked(View view) {
         zh.onZoomOut();
         updateCompass(viewModel.getData().getValue());
+    }
+    
+    public void GPSCheck(){
+        gpsStatus  = locGetter.checkIfGPSOnline();
+        Log.d("GPS check val", gpsStatus+ "");
+        ImageView red_dot = findViewById(R.id.reddot);
+        ImageView green_dot = findViewById(R.id.greendot);
+        long lengthDisabled = locGetter.GPSOfflineTime();
+        TextView tv = findViewById(R.id.GPSOffline);
+        red_dot.setVisibility(View.INVISIBLE);
+        green_dot.setVisibility(View.INVISIBLE);
+
+        if(gpsStatus){
+            red_dot.setVisibility(View.INVISIBLE);
+            tv.setVisibility(View.INVISIBLE);
+            //green dot, gps active
+            green_dot.setVisibility(View.VISIBLE);
+        }
+        else{
+            long lengthDisabledToSecs = lengthDisabled/1000;
+            long lengthDisabledToMins = (lengthDisabledToSecs%3600)/60;
+            long lengthDisabledToHours = lengthDisabledToSecs/3600;
+
+            if(lengthDisabledToHours < 1){
+                //less than an hour, show number of minutes
+                tv.setText((int)Math.floor(lengthDisabledToSecs/60) + " min");
+            }
+            else{
+                //show minutes and seconds
+                tv.setText((int)Math.floor(lengthDisabledToHours) + "h"+lengthDisabledToMins +" min");
+            }
+            tv.setVisibility(View.VISIBLE);
+            green_dot.setVisibility(View.INVISIBLE);
+            red_dot.setVisibility(View.VISIBLE);
+            //red dot, gps not active
+        }
+
     }
 
 }
