@@ -1,6 +1,7 @@
 package com.example.myapplication.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -13,6 +14,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Pair;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
@@ -110,9 +112,8 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, InputActivity.class);
             startActivity(intent);
         }
-
-
     }
+
 
     public void updateOrientation(float orientation) {
         this.orientation_current = orientation;
@@ -158,13 +159,6 @@ public class MainActivity extends AppCompatActivity {
         updateParentRelDirection();
         point.setVisibility(View.VISIBLE);
     }
-
-    void updateFriendLocations() {
-        for (Friend friend : friends) {
-
-        }
-    }
-
     @Override
     protected void onPause() {
         super.onPause();
@@ -260,13 +254,13 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void onZoomInClicked(View view) {
-        zoomHandler.onZoomIn();
-    }
-
-    public void onZoomOutClicked(View view) {
-        zoomHandler.onZoomOut();
-    }
+//    public void onZoomInClicked(View view) {
+//        zoomHandler.onZoomIn();
+//    }
+//
+//    public void onZoomOutClicked(View view) {
+//        zoomHandler.onZoomOut();
+//    }
 
     public void onLaunchInputClicked(View view) {
         Intent intent = new Intent(this, InputActivity.class);
