@@ -43,7 +43,7 @@ public class CoordinateUtil {
         return "ERROR";
 
     }
-    public static float directionBetweenPoints(double point1lat, float point2lat, double point1long, float point2long) {
+    public static float directionBetweenPoints(double point1lat, double point2lat, double point1long, double point2long) {
         if (point1lat == point2lat && point1long == point2long)
             return (float) 0.0;
         //using arctan2 function to find angle between parent and you, then converting it to degrees
@@ -54,7 +54,7 @@ public class CoordinateUtil {
         return angle;
     }
 
-    public static float distanceBetweenPoints(double point1lat, float point2lat, double point1long, float point2long){
+    public static float distanceBetweenPoints(double point1lat, double point2lat, double point1long, double point2long){
         if (point1lat == point2lat && point1long == point2long)
             return (float) 0.0;
         point1long = Math.toRadians(point1long);

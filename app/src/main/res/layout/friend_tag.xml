@@ -12,7 +12,17 @@
         android:text="TextView"
         app:layout_constraintCircleAngle="90"
         app:layout_constraintCircleRadius="150dp"
-        tools:layout_editor_absoluteX="171dp"
-        tools:layout_editor_absoluteY="62dp"
-        tools:ignore="MissingConstraints" />
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="-4dp"
+        tools:layout_editor_absoluteY="7dp" />
+
+    <ImageView
+        android:id="@+id/dot"
+        android:layout_width="54dp"
+        android:layout_height="34dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/greendot" />
 </androidx.constraintlayout.widget.ConstraintLayout>
