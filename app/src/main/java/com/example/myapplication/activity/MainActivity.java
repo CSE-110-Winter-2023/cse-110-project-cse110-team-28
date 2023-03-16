@@ -232,6 +232,8 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    /*Method used to check status of GPS, and update dot to red if disabled
+    and green if enabled. Also shows time GPS is disabled */
     public void GPSCheck(){
         gpsStatus  = locGetter.checkIfGPSOnline();
         Log.d("GPS check val", gpsStatus+ "");
