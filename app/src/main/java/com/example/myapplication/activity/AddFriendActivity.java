@@ -78,7 +78,7 @@ public class AddFriendActivity extends AppCompatActivity {
         }
 
 
-        LocationData newFriend = new LocationData(uuid, name, -361f, -361f, false);
+        LocationData newFriend = new LocationData(uuid, name, -ld.latitude, ld.longitude, false);
         dao.upsert(newFriend);
 
         finish();

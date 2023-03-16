@@ -81,20 +81,12 @@
         android:layout_marginTop="203dp"
         android:layout_marginEnd="95dp"
         android:layout_marginBottom="306dp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/compass" />
-
-    <ImageView
-        android:id="@+id/point"
-        android:layout_width="82dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/orientation_label"
-        app:layout_constraintEnd_toEndOf="@+id/compassImg"
-        app:layout_constraintStart_toStartOf="@+id/compassImg"
-        app:srcCompat="@android:drawable/btn_star_big_on" />
 
 
     <TextView
@@ -141,11 +133,16 @@
         android:layout_height="0dp"
         android:layout_marginTop="203dp"
         android:layout_marginBottom="306dp"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="1"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.454"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.651">
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <Button
         android:id="@+id/add_friend_btn"
@@ -158,5 +155,95 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/launch_input_btn"
         app:layout_constraintTop_toBottomOf="@+id/location_text" />
+
+    <ImageView
+        android:id="@+id/Circle2"
+        android:layout_width="273dp"
+        android:layout_height="276dp"
+        android:layout_marginBottom="160dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/circle" />
+
+    <ImageView
+        android:id="@+id/Circle3"
+        android:layout_width="171dp"
+        android:layout_height="221dp"
+        android:layout_marginBottom="160dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/circle" />
+
+    <ImageView
+        android:id="@+id/Circle1"
+        android:layout_width="386dp"
+        android:layout_height="465dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginBottom="3dp"
+        app:layout_constraintBottom_toTopOf="@+id/orientation_label"
+        app:layout_constraintEnd_toEndOf="@+id/friend_list"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/uuid_view"
+        app:srcCompat="@drawable/circle" />
+
+    <ImageView
+        android:id="@+id/Circle4"
+        android:layout_width="84dp"
+        android:layout_height="94dp"
+        android:layout_marginBottom="160dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/circle" />
+
+    <ImageView
+        android:id="@+id/Circle_MIddle"
+        android:layout_width="217dp"
+        android:layout_height="322dp"
+        android:layout_marginBottom="160dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/friend_list"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/circle" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="20dp" />
+
+    <Button
+        android:id="@+id/zoomOutButton"
+        android:layout_width="57dp"
+        android:layout_height="51dp"
+        android:text="-"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.912"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/zoomInButton"
+        app:layout_constraintVertical_bias="0.0"
+        android:onClick="onZoomOutClicked"/>
+
+    <Button
+        android:id="@+id/zoomInButton"
+        android:layout_width="57dp"
+        android:layout_height="51dp"
+        android:layout_marginTop="436dp"
+        android:text="+"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.912"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:onClick="onZoomInClicked"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

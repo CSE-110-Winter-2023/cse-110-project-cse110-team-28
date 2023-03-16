@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.myapplication.CoordinateUtil;
+import com.example.myapplication.ZoomHandler;
 import com.example.myapplication.friends.Friend;
 import com.example.myapplication.LayoutHandler;
 import com.example.myapplication.R;
@@ -55,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
     float currentDegree = 0.0f;
     private String custom_server = "https://socialcompass.goto.ucsd.edu/";
 
-
+    ZoomHandler zh;
 
     LayoutHandler lh = new LayoutHandler();
 
@@ -74,6 +75,8 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, InputActivity.class);
             startActivity(intent);
         }
+
+        zh = new ZoomHandler(this);
 
         setUpDatabases();
         setUpViewModel();
@@ -110,17 +113,26 @@ public class MainActivity extends AppCompatActivity {
             LocationData curr_friend = friends.get(i);
             var curr_loc = locGetter.getLocation();
             if (curr_loc == null) return;
-            int MAX_RADIUS = 400; // TODO
+            int MAX_RADIUS = 450; // TODO
 
 
             // TODO: Calculate the correct angle (in degrees) to use. Changes as we rotate.
             var angle = CoordinateUtil.directionBetweenPoints(curr_loc.first, curr_friend.latitude, curr_loc.second, curr_friend.longitude);
+
+            Log.d(curr_friend.label, "Lat: " + String.valueOf(curr_friend.latitude));
+            Log.d(curr_friend.label, "Long: " + String.valueOf(curr_friend.longitude));
             angle += currentDegree;
             Log.d(curr_friend.label, String.valueOf(angle));
 
             // TODO: Calculate the correct radius to use. Changes we zoom in/out. Edge of the circle is at: TODO
-            int radius = 400; // PLACEHOLDER
+            float dist = (float) CoordinateUtil.distanceBetweenPoints(
+                    curr_loc.first,curr_friend.latitude, curr_loc.second, curr_friend.longitude);
+            Log.d(curr_friend.label, "Distance: " + String.valueOf(dist));
 
+            int radius = (int) zh.getRadius(dist); // PLACEHOLDER
+            Log.d(curr_friend.label, "Radius: " + String.valueOf(radius));
+
+            //int radius = (450/4) * 3;
             // TODO: If too far, use a dot instead of the name
             View inflatedView = LayoutInflater.from(this).inflate(R.layout.friend_tag, friend_list, false);
             TextView friend = inflatedView.findViewById(R.id.name_tag);
@@ -129,8 +141,8 @@ public class MainActivity extends AppCompatActivity {
 
 
             // If too far, display a dot instead
-            boolean too_far = radius > MAX_RADIUS;
-            too_far = true;
+            boolean too_far = (radius >= MAX_RADIUS);
+            // too_far = true;
             if (too_far) {
                 // Dot instead of text. Display on edge of outermost server.
                 img.setVisibility(View.VISIBLE);
@@ -141,6 +153,8 @@ public class MainActivity extends AppCompatActivity {
                 img.setVisibility(View.INVISIBLE);
                 friend.setVisibility(View.VISIBLE);
             }
+
+            Log.d(curr_friend.label, "Radius Check 2: " + String.valueOf(radius));
 
             // Currently just has all your friends spaced around the circle.
             ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) inflatedView.getLayoutParams();
@@ -160,34 +174,34 @@ public class MainActivity extends AppCompatActivity {
 
         orientation_text.setText(Float.toString(orientation));
 
-        RotateAnimation rotateAnimation =
-                new RotateAnimation(currentDegree ,-1 *(this.orientation_current), Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        rotateAnimation.setDuration(250);
-        rotateAnimation.setFillAfter(true);
-
-        this.currentDegree = -1*(this.orientation_current);
-        ImageView imageView = findViewById(R.id.compassImg);
-        imageView.startAnimation(rotateAnimation);
+//        RotateAnimation rotateAnimation =
+//                new RotateAnimation(currentDegree ,-1 *(this.orientation_current), Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+//        rotateAnimation.setDuration(250);
+//        rotateAnimation.setFillAfter(true);
+//
+//        this.currentDegree = -1*(this.orientation_current);
+//        ImageView imageView = findViewById(R.id.compassImg);
+//        imageView.startAnimation(rotateAnimation);
 
     }
 
     public void updateLocation(Pair<Double, Double> loc) {
         TextView location_text = findViewById(R.id.location_text);
 
-        ImageView point = findViewById(R.id.point);
+        //ImageView point = findViewById(R.id.point);
         //point.setX(CoordinateUtil.directionBetweenPoints(loc.first,myFriend.getLat(),loc.second,myFriend.getLong()));
         //point.setY(CoordinateUtil.directionBetweenPoints(loc.first,myFriend.getLat(),loc.second,myFriend.getLong()));
 
         //getResources().getDisplayMetrics().density;
 
         //int px = (int) (150*getResources().getDisplayMetrics().density/160);
-        float angle = CoordinateUtil.directionBetweenPoints(loc.first,myFriend.getLat(),loc.second,myFriend.getLongit());
-        point.setX(lh.x_coordinate(angle));
-        point.setY(lh.y_coordinate(angle));
+//        float angle = CoordinateUtil.directionBetweenPoints(loc.first,myFriend.getLat(),loc.second,myFriend.getLongit());
+//        point.setX(lh.x_coordinate(angle));
+//        point.setY(lh.y_coordinate(angle));
 
         // TODO Update all friend locations too
         location_text.setText(Double.toString(loc.first) + " , " + Double.toString(loc.second));
-        point.setVisibility(View.VISIBLE);
+        //point.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -204,8 +218,8 @@ public class MainActivity extends AppCompatActivity {
         checkLocationPermissions();
         loadProfile();
 
-        ImageView point = findViewById(R.id.point);
-        point.setVisibility(View.INVISIBLE);
+        //ImageView point = findViewById(R.id.point);
+        //point.setVisibility(View.INVISIBLE);
 
         // set up Location and Orientation services
         orientGetter = new ActualOrientation(this);
@@ -292,6 +306,16 @@ public class MainActivity extends AppCompatActivity {
     public void onAddFriendClicked(View view) {
         Intent intent = new Intent(this, AddFriendActivity.class);
         startActivity(intent);
+    }
+
+    public void onZoomInClicked(View view) {
+       zh.onZoomIn();
+       updateCompass(viewModel.getData().getValue());
+    }
+
+    public void onZoomOutClicked(View view) {
+        zh.onZoomOut();
+        updateCompass(viewModel.getData().getValue());
     }
 
 }

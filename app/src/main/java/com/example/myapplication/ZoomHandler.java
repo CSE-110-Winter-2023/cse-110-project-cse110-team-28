@@ -50,13 +50,12 @@ public class ZoomHandler {
     * 3. 10-500 miles
     * 4. 500+ miles
     * */
-    public float getRadii(float dist) {
+    public float getRadius(float dist) {
         int[] maxes = {0, 1, 10, 500};
         double radius;
         int divisions;
-        float conversion;
         float percentage_in_division;
-        float max_rad = 200; // don't know what it is rn
+        float max_rad = 450; // don't know what it is rn
         float division_rad;
         int max_dist;
         switch(currentZoom) {
@@ -72,27 +71,69 @@ public class ZoomHandler {
                 }
 
                 return max_rad * percentage_in_division;
-            case zoomMid1:
+            case zoomMid2:
                 divisions = 2;
                 max_dist = 10;
 
+                if (dist >= max_dist) {
+                    return max_rad;
+                }
 
+                division_rad = max_rad / divisions;
 
-                break;
-            case zoomMid2:
+                if (dist <= 1) {
+                    percentage_in_division = dist;
+                    return division_rad * percentage_in_division;
+                }
+
+                percentage_in_division = (dist - 1) / (max_dist - 1);
+                return division_rad * (1 + percentage_in_division);
+              //  break;
+            case zoomMid1:
                 divisions = 3;
                 max_dist = 500;
 
 
+                if (dist >= max_dist) {
+                    return max_rad;
+                }
 
-                break;
+                division_rad = max_rad / divisions;
+
+                if (dist <= 1) {
+                    percentage_in_division = dist;
+                    return division_rad * percentage_in_division;
+                }
+                if (dist <= 10) {
+                    percentage_in_division = (dist - 1) / (10 - 1);
+                    return division_rad * (1 + percentage_in_division);
+                }
+                percentage_in_division = (dist - 10) / (max_dist - 10);
+                return division_rad * (2 + percentage_in_division);
+              //  break;
             case zoomOutMax:
                 divisions = 4;
                 max_dist = 500;
 
+                if (dist >= max_dist) {
+                    return max_rad;
+                }
+
+                division_rad = max_rad / divisions;
+
+                if (dist <= 1) {
+                    percentage_in_division = dist;
+                    return division_rad * percentage_in_division;
+                }
+                if (dist <= 10) {
+                    percentage_in_division = (dist - 1) / (10 - 1);
+                    return division_rad * (1 + percentage_in_division);
+                }
+                percentage_in_division = (dist - 10) / (max_dist - 10);
+                return division_rad * (2 + percentage_in_division);
 
 
-                break;
+                //break;
             default:
                 max_dist = 0;
                 divisions = 0;
@@ -102,14 +143,14 @@ public class ZoomHandler {
             return max_rad;
         }
 
-        conversion = max_dist / max_rad;
+
 
         division_rad = max_rad / divisions;
 
         for (int i = 1; i< divisions; i++) {
             if (dist < maxes[i]) {
-                float amountInInterval = dist - maxes[i];
-                percentage_in_division =  amountInInterval / max_dist;
+                float amountInInterval = dist - maxes[i-1];
+                percentage_in_division =  amountInInterval / (maxes[i] - maxes[i-1]);
                 return division_rad * (i + percentage_in_division);
             }
         }
