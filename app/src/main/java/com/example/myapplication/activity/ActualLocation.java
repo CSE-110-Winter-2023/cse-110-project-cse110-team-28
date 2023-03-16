@@ -8,6 +8,8 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.util.Pair;
+import java.util.Calendar;
+import java.util.Date;
 
 import androidx.core.app.ActivityCompat;
 
@@ -47,29 +49,14 @@ public class ActualLocation implements LocationGetter {
     }
 
     public boolean checkIfGPSOnline() {
-        boolean mGPS = this.locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        return mGPS;
+        final int delay = 5000;
+        long currentTime = Calendar.getInstance().getTimeInMillis();
+        return this.locationService.getUpdatedAt() > currentTime - delay;
     }
 
-    //returns last known location as a pair of latitude,longitude
-    public Pair<Double, Double> getLastKnownLocation() {
-        Criteria criteria = new Criteria();
-        if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION);
-        }
-
-        Location location = this.locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, false));
-        Pair<Double, Double> knownLoc = new Pair<> (.0,.0);
-        if(location !=null){
-            double lat = location.getLatitude();
-            double longi = location.getLongitude();
-
-            this.latitude = lat;
-            this.longitude = longi;
-
-            knownLoc = new Pair<Double, Double> (this.latitude, this.longitude);
-        }
-        return knownLoc;
+    public long GPSOfflineTime(){
+        long currentTime = Calendar.getInstance().getTimeInMillis();
+        return currentTime - this.locationService.getUpdatedAt();
     }
 
 
