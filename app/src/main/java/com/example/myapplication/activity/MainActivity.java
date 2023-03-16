@@ -9,6 +9,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.opengl.Visibility;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Pair;
@@ -58,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
     LayoutHandler lh = new LayoutHandler();
 
-    Friend myFriend = new Friend(55f, -100f, "Calvin", "myUUID");
+    Friend myFriend = new Friend(-23f, -21f, "Calvin", "myUUID");
 
 
     @Override
@@ -68,8 +69,14 @@ public class MainActivity extends AppCompatActivity {
 
         loadProfile();
 
-        dao = LocationDatabase.provide(this).getDao();
-        api = LocationAPI.provide(custom_server);
+        // If nothing saved, launch InputActivity ( Do we want to check UUID or name?)
+        if (user_UUID.equals("UUID NOT FOUND") || private_code.equals("PRIVATE CODE NOT FOUND") || user_name.equals("USER NAME NOT FOUND")) {
+            Intent intent = new Intent(this, InputActivity.class);
+            startActivity(intent);
+        }
+
+        setUpDatabases();
+        setUpViewModel();
 
         // dao.delete_all();
         // THESE TWO GUYS ARE CURRENTLY IN THE LOCAL DATABASE AND ARE BEING DISPLAYED ON THE HOME SCREEN
@@ -82,17 +89,16 @@ public class MainActivity extends AppCompatActivity {
         // public code: 68591d92-f36a-4b8a-89f1-702236f92848
         // private code: bacae4bd-6a4c-48f5-b3fc-2df94cb37f24
 
-        // TODO extract these methods too once you've got MainActivity figured out
+    }
 
+    private void setUpDatabases() {
+        dao = LocationDatabase.provide(this).getDao();
+        api = LocationAPI.provide(custom_server);
+    }
+
+    private void setUpViewModel() {
         viewModel = new ViewModelProvider(this).get(LocationViewModel.class);
-//        viewModel.getData().observe(this, adapter::setLocationData);
         viewModel.getData().observe(this, this::updateCompass);
-
-        // If nothing saved, launch InputActivity ( Do we want to check UUID or name?)
-        if (user_UUID.equals("UUID NOT FOUND") || private_code.equals("PRIVATE CODE NOT FOUND") || user_name.equals("USER NAME NOT FOUND")) {
-            Intent intent = new Intent(this, InputActivity.class);
-            startActivity(intent);
-        }
     }
 
     private void updateCompass(List<LocationData> friends){
@@ -101,21 +107,45 @@ public class MainActivity extends AppCompatActivity {
         var friend_list = (ConstraintLayout) findViewById(R.id.friend_list);
         friend_list.removeAllViews();
         for (int i = 0; i < friends.size(); i ++ ) {
-            // TODO: Calculate the correct angle (in degrees) to use. Changes as we rotate.
-            // TODO: Calculate the correct radius to use. Changes we zoom in/out. Edge of the circle is at: TODO
-
-            LocationData curr = friends.get(i);
+            LocationData curr_friend = friends.get(i);
             var curr_loc = locGetter.getLocation();
+            if (curr_loc == null) return;
+            int MAX_RADIUS = 400; // TODO
 
 
-                    View inflatedView = LayoutInflater.from(this).inflate(R.layout.friend_tag, friend_list, false);
+            // TODO: Calculate the correct angle (in degrees) to use. Changes as we rotate.
+            var angle = CoordinateUtil.directionBetweenPoints(curr_loc.first, curr_friend.latitude, curr_loc.second, curr_friend.longitude);
+            angle += currentDegree;
+            Log.d(curr_friend.label, String.valueOf(angle));
+
+            // TODO: Calculate the correct radius to use. Changes we zoom in/out. Edge of the circle is at: TODO
+            int radius = 400; // PLACEHOLDER
+
+            // TODO: If too far, use a dot instead of the name
+            View inflatedView = LayoutInflater.from(this).inflate(R.layout.friend_tag, friend_list, false);
             TextView friend = inflatedView.findViewById(R.id.name_tag);
-            friend.setText(friends.get(i).label);
+            ImageView img = inflatedView.findViewById(R.id.dot);
+            friend.setText(curr_friend.label);
+
+
+            // If too far, display a dot instead
+            boolean too_far = radius > MAX_RADIUS;
+            too_far = true;
+            if (too_far) {
+                // Dot instead of text. Display on edge of outermost server.
+                img.setVisibility(View.VISIBLE);
+                friend.setVisibility(View.INVISIBLE);
+                radius = MAX_RADIUS;
+
+            } else {
+                img.setVisibility(View.INVISIBLE);
+                friend.setVisibility(View.VISIBLE);
+            }
 
             // Currently just has all your friends spaced around the circle.
             ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) inflatedView.getLayoutParams();
-            params.circleAngle = 60 * i;
-            params.circleRadius = 300;
+            params.circleAngle = angle;
+            params.circleRadius = radius;
             params.circleConstraint = R.id.friend_list;
 
             inflatedView.setLayoutParams(params);
@@ -129,7 +159,6 @@ public class MainActivity extends AppCompatActivity {
         TextView orientation_text = findViewById(R.id.orientation_text);
 
         orientation_text.setText(Float.toString(orientation));
-        updateParentRelDirection();
 
         RotateAnimation rotateAnimation =
                 new RotateAnimation(currentDegree ,-1 *(this.orientation_current), Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
@@ -141,12 +170,6 @@ public class MainActivity extends AppCompatActivity {
         imageView.startAnimation(rotateAnimation);
 
     }
-
-    // TODO adapt this for friends instead
-    public void updateParentRelDirection() {
-
-    }
-
 
     public void updateLocation(Pair<Double, Double> loc) {
         TextView location_text = findViewById(R.id.location_text);
@@ -164,7 +187,6 @@ public class MainActivity extends AppCompatActivity {
 
         // TODO Update all friend locations too
         location_text.setText(Double.toString(loc.first) + " , " + Double.toString(loc.second));
-        updateParentRelDirection();
         point.setVisibility(View.VISIBLE);
     }
 
