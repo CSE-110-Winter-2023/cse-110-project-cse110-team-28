@@ -243,15 +243,26 @@ public class MainActivity extends AppCompatActivity {
         if(gpsStatus){
             red_dot.setVisibility(View.INVISIBLE);
             tv.setVisibility(View.INVISIBLE);
-            //green dot, gps/network active
+            //green dot, gps active
             green_dot.setVisibility(View.VISIBLE);
         }
         else{
-            tv.setText(lengthDisabled/1000 + "secs");
+            long lengthDisabledToSecs = lengthDisabled/1000;
+            long lengthDisabledToMins = (lengthDisabledToSecs%3600)/60;
+            long lengthDisabledToHours = lengthDisabledToSecs/3600;
+
+            if(lengthDisabledToHours < 1){
+                //less than an hour, show number of minutes
+                tv.setText((int)Math.floor(lengthDisabledToSecs/60) + " min");
+            }
+            else{
+                //show minutes and seconds
+                tv.setText((int)Math.floor(lengthDisabledToHours) + "h"+lengthDisabledToMins +" min");
+            }
             tv.setVisibility(View.VISIBLE);
             green_dot.setVisibility(View.INVISIBLE);
             red_dot.setVisibility(View.VISIBLE);
-            //red dot, not active
+            //red dot, gps not active
         }
 
     }
