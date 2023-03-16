@@ -56,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
     private boolean gpsStatus;
 
     private ScheduledExecutorService executor;
-    float currentDegree = 0.0f;
     private String custom_server = "https://socialcompass.goto.ucsd.edu/";
 
     ZoomHandler zh;
@@ -125,13 +124,14 @@ public class MainActivity extends AppCompatActivity {
             LocationData curr_friend = friends.get(i);
             var curr_loc = locGetter.getLocation();
             if (curr_loc == null) return;
+            Log.d("UPDATECOMPASS", curr_friend.label);
             int MAX_RADIUS = 450; // TODO
 
 
             // TODO: Calculate the correct angle (in degrees) to use. Changes as we rotate.
             var angle = CoordinateUtil.directionBetweenPoints(curr_loc.first, curr_friend.latitude, curr_loc.second, curr_friend.longitude);
 
-            angle += currentDegree;
+            angle -= this.orientation_current;
 
             // TODO: Calculate the correct radius to use. Changes we zoom in/out. Edge of the circle is at: TODO
             float dist = (float) CoordinateUtil.distanceBetweenPoints(
