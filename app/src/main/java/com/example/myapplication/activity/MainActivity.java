@@ -119,10 +119,7 @@ public class MainActivity extends AppCompatActivity {
             // TODO: Calculate the correct angle (in degrees) to use. Changes as we rotate.
             var angle = CoordinateUtil.directionBetweenPoints(curr_loc.first, curr_friend.latitude, curr_loc.second, curr_friend.longitude);
 
-            Log.d(curr_friend.label, "Lat: " + String.valueOf(curr_friend.latitude));
-            Log.d(curr_friend.label, "Long: " + String.valueOf(curr_friend.longitude));
             angle += currentDegree;
-            Log.d(curr_friend.label, String.valueOf(angle));
 
             // TODO: Calculate the correct radius to use. Changes we zoom in/out. Edge of the circle is at: TODO
             float dist = (float) CoordinateUtil.distanceBetweenPoints(
@@ -130,7 +127,6 @@ public class MainActivity extends AppCompatActivity {
             Log.d(curr_friend.label, "Distance: " + String.valueOf(dist));
 
             int radius = (int) zh.getRadius(dist); // PLACEHOLDER
-            Log.d(curr_friend.label, "Radius: " + String.valueOf(radius));
 
             //int radius = (450/4) * 3;
             // TODO: If too far, use a dot instead of the name
@@ -153,8 +149,6 @@ public class MainActivity extends AppCompatActivity {
                 img.setVisibility(View.INVISIBLE);
                 friend.setVisibility(View.VISIBLE);
             }
-
-            Log.d(curr_friend.label, "Radius Check 2: " + String.valueOf(radius));
 
             // Currently just has all your friends spaced around the circle.
             ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) inflatedView.getLayoutParams();

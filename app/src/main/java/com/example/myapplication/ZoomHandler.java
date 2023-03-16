@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import android.app.Activity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -38,7 +39,7 @@ public class ZoomHandler {
         z_in = mainActivity.findViewById(R.id.zoomInButton);
         z_out = mainActivity.findViewById(R.id.zoomOutButton);
         //
-        currentZoom = zoomStates.zoomMid2;
+        currentZoom = zoomStates.zoomMid1;
         onZoomIn();
 
     }
@@ -113,7 +114,7 @@ public class ZoomHandler {
               //  break;
             case zoomOutMax:
                 divisions = 4;
-                max_dist = 500;
+                max_dist = 12500;
 
                 if (dist >= max_dist) {
                     return max_rad;
@@ -125,13 +126,21 @@ public class ZoomHandler {
                     percentage_in_division = dist;
                     return division_rad * percentage_in_division;
                 }
+
+
                 if (dist <= 10) {
                     percentage_in_division = (dist - 1) / (10 - 1);
                     return division_rad * (1 + percentage_in_division);
                 }
-                percentage_in_division = (dist - 10) / (max_dist - 10);
-                return division_rad * (2 + percentage_in_division);
 
+                if (dist <= 500) {
+                    percentage_in_division = (dist - 10) / (500 - 10);
+                    return division_rad * (2 + percentage_in_division);
+                }
+
+                percentage_in_division = (dist - 500) / (max_dist - 500);
+
+                return division_rad * (3 + percentage_in_division);
 
                 //break;
             default:
@@ -147,13 +156,13 @@ public class ZoomHandler {
 
         division_rad = max_rad / divisions;
 
-        for (int i = 1; i< divisions; i++) {
-            if (dist < maxes[i]) {
-                float amountInInterval = dist - maxes[i-1];
-                percentage_in_division =  amountInInterval / (maxes[i] - maxes[i-1]);
-                return division_rad * (i + percentage_in_division);
-            }
-        }
+//        for (int i = 1; i< divisions; i++) {
+//            if (dist < maxes[i]) {
+//                float amountInInterval = dist - maxes[i-1];
+//                percentage_in_division =  amountInInterval / (maxes[i] - maxes[i-1]);
+//                return division_rad * (i + percentage_in_division);
+//            }
+//        }
 
         return 0f;
     }
