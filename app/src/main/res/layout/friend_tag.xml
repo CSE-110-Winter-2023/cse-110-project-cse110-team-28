@@ -14,7 +14,9 @@
         app:layout_constraintCircleRadius="150dp"
         tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="-4dp"
-        tools:layout_editor_absoluteY="7dp" />
+        tools:layout_editor_absoluteY="7dp"
+        android:ellipsize="end"
+        android:singleLine="true"/>
 
     <ImageView
         android:id="@+id/dot"

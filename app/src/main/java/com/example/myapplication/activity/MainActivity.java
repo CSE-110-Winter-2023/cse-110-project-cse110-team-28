@@ -120,6 +120,9 @@ public class MainActivity extends AppCompatActivity {
 
         var friend_list = (ConstraintLayout) findViewById(R.id.friend_list);
         friend_list.removeAllViews();
+
+        ArrayList<Pair<Integer, Float>> angleRads = new ArrayList<>();
+
         for (int i = 0; i < friends.size(); i ++ ) {
             LocationData curr_friend = friends.get(i);
             var curr_loc = locGetter.getLocation();
@@ -161,6 +164,19 @@ public class MainActivity extends AppCompatActivity {
                 img.setVisibility(View.INVISIBLE);
                 friend.setVisibility(View.VISIBLE);
             }
+
+            // Check if radius and angle are within bounds for all that came before
+            // rad within + or - 10, angle within 3 degrees
+            for (int j = 0; j < i; j++ ) {
+                Pair<Integer, Float> pair = angleRads.get(j);
+                if (radius < pair.first + 10 && radius > pair.first - 10) {
+                    if (angle < pair.second + 3 && angle > pair.second - 3) {
+                        radius -= 40;
+                    }
+                }
+            }
+
+            angleRads.add(new Pair<Integer, Float>(radius, angle));
 
             // Currently just has all your friends spaced around the circle.
             ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) inflatedView.getLayoutParams();
@@ -242,7 +258,7 @@ public class MainActivity extends AppCompatActivity {
 //        gpsOnline.setText(String.valueOf(gpsstatus));
 
         setUpLocationExecutor();
-
+        updateCompass(viewModel.getData().getValue());
     }
 
     private void checkLocationPermissions() {
