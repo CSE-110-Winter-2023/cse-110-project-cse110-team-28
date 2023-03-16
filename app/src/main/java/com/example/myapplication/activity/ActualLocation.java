@@ -38,6 +38,7 @@ public class ActualLocation implements LocationGetter {
             this.location = loc;
 
         });
+
     }
 
     @Override
