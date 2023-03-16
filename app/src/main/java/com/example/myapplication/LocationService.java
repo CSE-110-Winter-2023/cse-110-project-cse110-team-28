@@ -14,6 +14,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import java.util.Calendar;
+
 public class LocationService implements LocationListener {
 
     private static LocationService instance;
@@ -22,6 +24,8 @@ public class LocationService implements LocationListener {
     private MutableLiveData<Pair<Double, Double>> locationValue;
 
     private final LocationManager locationManager;
+
+    private long lastUpdatedAt;
 
     public static LocationService singleton(Activity activity) {
         if (instance == null) {
@@ -41,6 +45,7 @@ public class LocationService implements LocationListener {
         this.locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
         // Register sensor listeners
         this.registerLocalListener();
+        this.lastUpdatedAt =  Calendar.getInstance().getTimeInMillis();
     }
 
     private void registerLocalListener() {
@@ -57,6 +62,8 @@ public class LocationService implements LocationListener {
 
     public void onLocationChanged(@NonNull Location location) {
         this.locationValue.postValue(new Pair<Double, Double>(location.getLatitude(), location.getLongitude()));
+        this.lastUpdatedAt = location.getTime();
+
     }
 
     private void unregisterLocationListener() { locationManager.removeUpdates(this);}
@@ -66,6 +73,10 @@ public class LocationService implements LocationListener {
     public void setMockOrientationSource(MutableLiveData<Pair<Double, Double>> mockDataSource) {
         unregisterLocationListener();
         this.locationValue = mockDataSource;
+    }
+
+    public long getUpdatedAt(){
+        return this.lastUpdatedAt;
     }
 
 

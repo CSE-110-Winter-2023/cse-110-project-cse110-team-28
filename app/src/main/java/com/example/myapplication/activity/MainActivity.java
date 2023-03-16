@@ -13,6 +13,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.view.animation.Animation;
@@ -110,11 +111,12 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         }
         final Handler handler = new Handler();
-        final int delay = 1000; // 1000 milliseconds == 1 second
+        final int delay = 5000; // 1000 milliseconds == 1 second
 
         handler.postDelayed(new Runnable() {
             public void run() {
                 GPSCheck();
+
                 handler.postDelayed(this, delay);
             }
         }, delay);
@@ -232,19 +234,26 @@ public class MainActivity extends AppCompatActivity {
 
     public void GPSCheck(){
         gpsStatus  = locGetter.checkIfGPSOnline();
-        networkStatus = locGetter.checkIfNetworkOnline();
+        Log.d("GPS check val", gpsStatus+ "");
         ImageView red_dot = findViewById(R.id.reddot);
         ImageView green_dot = findViewById(R.id.greendot);
-        red_dot.setVisibility(View.INVISIBLE);
-        green_dot.setVisibility(View.INVISIBLE);
-        if(gpsStatus && networkStatus){
+        long lengthDisabled = locGetter.GPSOfflineTime();
+        TextView tv = findViewById(R.id.GPSOffline);
+
+        if(gpsStatus){
+            red_dot.setVisibility(View.INVISIBLE);
+            tv.setVisibility(View.INVISIBLE);
             //green dot, gps/network active
             green_dot.setVisibility(View.VISIBLE);
         }
         else{
+            tv.setText(lengthDisabled/1000 + "secs");
+            tv.setVisibility(View.VISIBLE);
+            green_dot.setVisibility(View.INVISIBLE);
             red_dot.setVisibility(View.VISIBLE);
             //red dot, not active
         }
+
     }
 
 
