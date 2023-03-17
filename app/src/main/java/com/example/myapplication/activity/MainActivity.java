@@ -9,23 +9,17 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.opengl.Visibility;
 import android.os.Handler;
 import android.util.Log;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.myapplication.CoordinateUtil;
 import com.example.myapplication.ZoomHandler;
-import com.example.myapplication.friends.Friend;
-import com.example.myapplication.LayoutHandler;
 import com.example.myapplication.R;
 import com.example.myapplication.location_data.LocationAPI;
 import com.example.myapplication.location_data.LocationData;
@@ -56,15 +50,22 @@ public class MainActivity extends AppCompatActivity {
     private boolean gpsStatus;
 
     private ScheduledExecutorService executor;
+
     private String custom_server = "https://socialcompass.goto.ucsd.edu/";
 
     ZoomHandler zh;
 
-    LayoutHandler lh = new LayoutHandler();
-
-    Friend myFriend = new Friend(-23f, -21f, "Calvin", "myUUID");
 
 
+    private void loadProfile() {
+        SharedPreferences preferences = getSharedPreferences("saved_data", MODE_PRIVATE);
+
+        this.user_name = preferences.getString("user_name", "USERNAME NOT FOUND");
+        this.user_UUID = preferences.getString("user_UUID", "UUID NOT FOUND");
+        this.custom_server = preferences.getString("custom_server", "https://socialcompass.goto.ucsd.edu/");
+        this.private_code = preferences.getString("private_code", "PRIVATE CODE NOT FOUND");
+
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
 
         loadProfile();
 
-        // If nothing saved, launch InputActivity ( Do we want to check UUID or name?)
+        // If nothing saved, launch InputActivity
         if (user_UUID.equals("UUID NOT FOUND") || private_code.equals("PRIVATE CODE NOT FOUND") || user_name.equals("USER NAME NOT FOUND")) {
             Intent intent = new Intent(this, InputActivity.class);
             startActivity(intent);
@@ -80,20 +81,12 @@ public class MainActivity extends AppCompatActivity {
 
         zh = new ZoomHandler(this);
 
-        setUpDatabases();
         setUpViewModel();
+        setUpGPSChecker();
 
-        // dao.delete_all();
-        // THESE TWO GUYS ARE CURRENTLY IN THE LOCAL DATABASE AND ARE BEING DISPLAYED ON THE HOME SCREEN
-        LocationData data2 = new LocationData("efb71004-d7b5-4067-b3b2-59904b7cda87", "Bob", 10f, 10f, true);
-        // Bob's private code: 82b5ac85-6d9b-4084-8ebd-564363dacccb
-        var data = new LocationData("c4a86ce2-fed4-4f98-bb1c-b5d83c968d93", "Calvin", 55f, -100f, true);
-        // Calvin's private code: 8c89b79c-a03c-4580-b785-9be388e97f66
+    }
 
-        // This user has...
-        // public code: 68591d92-f36a-4b8a-89f1-702236f92848
-        // private code: bacae4bd-6a4c-48f5-b3fc-2df94cb37f24
-
+    private void setUpGPSChecker() {
         final Handler handler = new Handler();
         final int delay = 5000; // 1000 milliseconds == 1 second
         handler.postDelayed(new Runnable() {
@@ -120,38 +113,35 @@ public class MainActivity extends AppCompatActivity {
 
         var friend_list = (ConstraintLayout) findViewById(R.id.friend_list);
         friend_list.removeAllViews();
+
+        ArrayList<Pair<Integer, Float>> angleRads = new ArrayList<>();
+
         for (int i = 0; i < friends.size(); i ++ ) {
             LocationData curr_friend = friends.get(i);
+            if (locGetter == null) return;
             var curr_loc = locGetter.getLocation();
             if (curr_loc == null) return;
-            Log.d("UPDATECOMPASS", curr_friend.label);
-            int MAX_RADIUS = 450; // TODO
+            int MAX_RADIUS = 450;
 
 
-            // TODO: Calculate the correct angle (in degrees) to use. Changes as we rotate.
+            // Calculate the correct angle (in degrees) to use. Changes as we rotate.
             var angle = CoordinateUtil.directionBetweenPoints(curr_loc.first, curr_friend.latitude, curr_loc.second, curr_friend.longitude);
 
             angle -= this.orientation_current;
 
-            // TODO: Calculate the correct radius to use. Changes we zoom in/out. Edge of the circle is at: TODO
+            // Calculate the correct radius to use. Changes we zoom in/out. Edge of the circle is at: 450
             float dist = (float) CoordinateUtil.distanceBetweenPoints(
                     curr_loc.first,curr_friend.latitude, curr_loc.second, curr_friend.longitude);
-            Log.d(curr_friend.label, "Distance: " + String.valueOf(dist));
 
             int radius = (int) zh.getRadius(dist); // PLACEHOLDER
 
-            //int radius = (450/4) * 3;
-            // TODO: If too far, use a dot instead of the name
             View inflatedView = LayoutInflater.from(this).inflate(R.layout.friend_tag, friend_list, false);
             TextView friend = inflatedView.findViewById(R.id.name_tag);
             ImageView img = inflatedView.findViewById(R.id.dot);
             friend.setText(curr_friend.label);
 
-
-            // If too far, display a dot instead
-            boolean too_far = (radius >= MAX_RADIUS);
-            // too_far = true;
-            if (too_far) {
+            // If too far, use a dot instead of the name
+            if (radius >= MAX_RADIUS) {
                 // Dot instead of text. Display on edge of outermost server.
                 img.setVisibility(View.VISIBLE);
                 friend.setVisibility(View.INVISIBLE);
@@ -161,6 +151,19 @@ public class MainActivity extends AppCompatActivity {
                 img.setVisibility(View.INVISIBLE);
                 friend.setVisibility(View.VISIBLE);
             }
+
+            // Check if radius and angle are within bounds for all that came before
+            // rad within + or - 10, angle within 3 degrees
+            for (int j = 0; j < i; j++ ) {
+                Pair<Integer, Float> pair = angleRads.get(j);
+                if (radius < pair.first + 10 && radius > pair.first - 10) {
+                    if (angle < pair.second + 3 && angle > pair.second - 3) {
+                        radius -= 60;
+                    }
+                }
+            }
+
+            angleRads.add(new Pair<Integer, Float>(radius, angle));
 
             // Currently just has all your friends spaced around the circle.
             ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) inflatedView.getLayoutParams();
@@ -179,42 +182,22 @@ public class MainActivity extends AppCompatActivity {
         TextView orientation_text = findViewById(R.id.orientation_text);
 
         orientation_text.setText(Float.toString(orientation));
-
-//        RotateAnimation rotateAnimation =
-//                new RotateAnimation(currentDegree ,-1 *(this.orientation_current), Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-//        rotateAnimation.setDuration(250);
-//        rotateAnimation.setFillAfter(true);
-//
-//        this.currentDegree = -1*(this.orientation_current);
-//        ImageView imageView = findViewById(R.id.compassImg);
-//        imageView.startAnimation(rotateAnimation);
+        updateCompass(viewModel.getData().getValue());
 
     }
 
+    // Show the user's current location
     public void updateLocation(Pair<Double, Double> loc) {
         TextView location_text = findViewById(R.id.location_text);
 
-        //ImageView point = findViewById(R.id.point);
-        //point.setX(CoordinateUtil.directionBetweenPoints(loc.first,myFriend.getLat(),loc.second,myFriend.getLong()));
-        //point.setY(CoordinateUtil.directionBetweenPoints(loc.first,myFriend.getLat(),loc.second,myFriend.getLong()));
-
-        //getResources().getDisplayMetrics().density;
-
-        //int px = (int) (150*getResources().getDisplayMetrics().density/160);
-//        float angle = CoordinateUtil.directionBetweenPoints(loc.first,myFriend.getLat(),loc.second,myFriend.getLongit());
-//        point.setX(lh.x_coordinate(angle));
-//        point.setY(lh.y_coordinate(angle));
-
-        // TODO Update all friend locations too
         location_text.setText(Double.toString(loc.first) + " , " + Double.toString(loc.second));
-        //point.setVisibility(View.VISIBLE);
+        updateCompass(viewModel.getData().getValue());
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         executor.shutdown();
-        this.orientGetter.halt();
     }
 
     @Override
@@ -224,8 +207,8 @@ public class MainActivity extends AppCompatActivity {
         checkLocationPermissions();
         loadProfile();
 
-        //ImageView point = findViewById(R.id.point);
-        //point.setVisibility(View.INVISIBLE);
+        // Make sure the custom server is set up if it was input
+        setUpDatabases();
 
         // set up Location and Orientation services
         orientGetter = new ActualOrientation(this);
@@ -237,12 +220,8 @@ public class MainActivity extends AppCompatActivity {
 
         GPSCheck();
 
-
-//        TextView gpsOnline = findViewById(R.id.gpsStatus);
-//        gpsOnline.setText(String.valueOf(gpsstatus));
-
         setUpLocationExecutor();
-
+        updateCompass(viewModel.getData().getValue());
     }
 
     private void checkLocationPermissions() {
@@ -266,6 +245,7 @@ public class MainActivity extends AppCompatActivity {
 
             // Upload your current location to the server
             var location = locGetter.getLocation();
+            if (location == null) { return; }
             var to_upload = new LocationData(this.user_UUID, this.user_name, location.first, location.second, false);
             to_upload.private_code = this.private_code;
             api.put(to_upload);
@@ -273,23 +253,16 @@ public class MainActivity extends AppCompatActivity {
             // Pull the updated location of all your friends from the server
             for (var f : friends)
             {
+                Log.e("FRIEND: ", f.public_code);
                 var got = api.get(f.public_code);
+                if (got == null) continue;
                 dao.upsert(got);
-                Log.e("FRIEND: ", got.toString());
+
             }
 
-        }, 9, 3, TimeUnit.SECONDS);
+        }, 3, 3, TimeUnit.SECONDS);
     }
 
-    private void loadProfile() {
-        SharedPreferences preferences = getSharedPreferences("saved_data", MODE_PRIVATE);
-
-        this.user_name = preferences.getString("user_name", "USERNAME NOT FOUND");
-        this.user_UUID = preferences.getString("user_UUID", "UUID NOT FOUND");
-        this.custom_server = preferences.getString("custom_server", "https://socialcompass.goto.ucsd.edu/");
-        this.private_code = preferences.getString("private_code", "PRIVATE CODE NOT FOUND");
-
-    }
 
     public void onLaunchInputClicked(View view) {
         Intent intent = new Intent(this, InputActivity.class);

@@ -56,7 +56,7 @@ public class ZoomHandler {
         double radius;
         int divisions;
         float percentage_in_division;
-        float max_rad = 450; // don't know what it is rn
+        float max_rad = 450;
         float division_rad;
         int max_dist;
         switch(currentZoom) {
@@ -151,18 +151,6 @@ public class ZoomHandler {
         if (dist >= max_dist) {
             return max_rad;
         }
-
-
-
-        division_rad = max_rad / divisions;
-
-//        for (int i = 1; i< divisions; i++) {
-//            if (dist < maxes[i]) {
-//                float amountInInterval = dist - maxes[i-1];
-//                percentage_in_division =  amountInInterval / (maxes[i] - maxes[i-1]);
-//                return division_rad * (i + percentage_in_division);
-//            }
-//        }
 
         return 0f;
     }

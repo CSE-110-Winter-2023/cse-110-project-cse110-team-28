@@ -12,8 +12,6 @@ public class ActualOrientation implements OrientationGetter{
 //
 
         this.orientationService.getOrientation().observe(this.activity, orientation -> {
-            // Update textview with latest value
-
             this.curr_orient = orientation;
             this.activity.updateOrientation(this.curr_orient);
         });
@@ -28,4 +26,5 @@ public class ActualOrientation implements OrientationGetter{
     public void halt() {
         this.orientationService.unregisterSensorListeners();
     }
+
 }
