@@ -9,11 +9,9 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.opengl.Visibility;
 import android.os.Handler;
 import android.util.Log;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,8 +20,6 @@ import android.widget.TextView;
 
 import com.example.myapplication.CoordinateUtil;
 import com.example.myapplication.ZoomHandler;
-import com.example.myapplication.friends.Friend;
-import com.example.myapplication.LayoutHandler;
 import com.example.myapplication.R;
 import com.example.myapplication.location_data.LocationAPI;
 import com.example.myapplication.location_data.LocationData;
@@ -54,12 +50,22 @@ public class MainActivity extends AppCompatActivity {
     private boolean gpsStatus;
 
     private ScheduledExecutorService executor;
+
     private String custom_server = "https://socialcompass.goto.ucsd.edu/";
 
     ZoomHandler zh;
 
-    LayoutHandler lh = new LayoutHandler();
 
+
+    private void loadProfile() {
+        SharedPreferences preferences = getSharedPreferences("saved_data", MODE_PRIVATE);
+
+        this.user_name = preferences.getString("user_name", "USERNAME NOT FOUND");
+        this.user_UUID = preferences.getString("user_UUID", "UUID NOT FOUND");
+        this.custom_server = preferences.getString("custom_server", "https://socialcompass.goto.ucsd.edu/");
+        this.private_code = preferences.getString("private_code", "PRIVATE CODE NOT FOUND");
+
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
 
         loadProfile();
 
-        // If nothing saved, launch InputActivity ( Do we want to check UUID or name?)
+        // If nothing saved, launch InputActivity
         if (user_UUID.equals("UUID NOT FOUND") || private_code.equals("PRIVATE CODE NOT FOUND") || user_name.equals("USER NAME NOT FOUND")) {
             Intent intent = new Intent(this, InputActivity.class);
             startActivity(intent);
@@ -75,20 +81,12 @@ public class MainActivity extends AppCompatActivity {
 
         zh = new ZoomHandler(this);
 
-        setUpDatabases();
         setUpViewModel();
+        setUpGPSChecker();
 
-        // dao.delete_all();
-        // THESE TWO GUYS ARE CURRENTLY IN THE LOCAL DATABASE AND ARE BEING DISPLAYED ON THE HOME SCREEN
-        LocationData data2 = new LocationData("efb71004-d7b5-4067-b3b2-59904b7cda87", "Bob", 10f, 10f, true);
-        // Bob's private code: 82b5ac85-6d9b-4084-8ebd-564363dacccb
-        var data = new LocationData("c4a86ce2-fed4-4f98-bb1c-b5d83c968d93", "Calvin", 55f, -100f, true);
-        // Calvin's private code: 8c89b79c-a03c-4580-b785-9be388e97f66
+    }
 
-        // This user has...
-        // public code: 68591d92-f36a-4b8a-89f1-702236f92848
-        // private code: bacae4bd-6a4c-48f5-b3fc-2df94cb37f24
-
+    private void setUpGPSChecker() {
         final Handler handler = new Handler();
         final int delay = 5000; // 1000 milliseconds == 1 second
         handler.postDelayed(new Runnable() {
@@ -209,6 +207,9 @@ public class MainActivity extends AppCompatActivity {
         checkLocationPermissions();
         loadProfile();
 
+        // Make sure the custom server is set up if it was input
+        setUpDatabases();
+
         // set up Location and Orientation services
         orientGetter = new ActualOrientation(this);
         locGetter = new ActualLocation(this);
@@ -262,15 +263,6 @@ public class MainActivity extends AppCompatActivity {
         }, 3, 3, TimeUnit.SECONDS);
     }
 
-    private void loadProfile() {
-        SharedPreferences preferences = getSharedPreferences("saved_data", MODE_PRIVATE);
-
-        this.user_name = preferences.getString("user_name", "USERNAME NOT FOUND");
-        this.user_UUID = preferences.getString("user_UUID", "UUID NOT FOUND");
-        this.custom_server = preferences.getString("custom_server", "https://socialcompass.goto.ucsd.edu/");
-        this.private_code = preferences.getString("private_code", "PRIVATE CODE NOT FOUND");
-
-    }
 
     public void onLaunchInputClicked(View view) {
         Intent intent = new Intent(this, InputActivity.class);
