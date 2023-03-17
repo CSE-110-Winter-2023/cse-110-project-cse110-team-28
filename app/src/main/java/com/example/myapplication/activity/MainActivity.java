@@ -17,8 +17,6 @@ import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -61,9 +59,6 @@ public class MainActivity extends AppCompatActivity {
     ZoomHandler zh;
 
     LayoutHandler lh = new LayoutHandler();
-
-    Friend myFriend = new Friend(-23f, -21f, "Calvin", "myUUID");
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,36 +120,30 @@ public class MainActivity extends AppCompatActivity {
 
         for (int i = 0; i < friends.size(); i ++ ) {
             LocationData curr_friend = friends.get(i);
+            if (locGetter == null) return;
             var curr_loc = locGetter.getLocation();
             if (curr_loc == null) return;
-            Log.d("UPDATECOMPASS", curr_friend.label);
-            int MAX_RADIUS = 450; // TODO
+            int MAX_RADIUS = 450;
 
 
-            // TODO: Calculate the correct angle (in degrees) to use. Changes as we rotate.
+            // Calculate the correct angle (in degrees) to use. Changes as we rotate.
             var angle = CoordinateUtil.directionBetweenPoints(curr_loc.first, curr_friend.latitude, curr_loc.second, curr_friend.longitude);
 
             angle -= this.orientation_current;
 
-            // TODO: Calculate the correct radius to use. Changes we zoom in/out. Edge of the circle is at: TODO
+            // Calculate the correct radius to use. Changes we zoom in/out. Edge of the circle is at: 450
             float dist = (float) CoordinateUtil.distanceBetweenPoints(
                     curr_loc.first,curr_friend.latitude, curr_loc.second, curr_friend.longitude);
-            Log.d(curr_friend.label, "Distance: " + String.valueOf(dist));
 
             int radius = (int) zh.getRadius(dist); // PLACEHOLDER
 
-            //int radius = (450/4) * 3;
-            // TODO: If too far, use a dot instead of the name
             View inflatedView = LayoutInflater.from(this).inflate(R.layout.friend_tag, friend_list, false);
             TextView friend = inflatedView.findViewById(R.id.name_tag);
             ImageView img = inflatedView.findViewById(R.id.dot);
             friend.setText(curr_friend.label);
 
-
-            // If too far, display a dot instead
-            boolean too_far = (radius >= MAX_RADIUS);
-            // too_far = true;
-            if (too_far) {
+            // If too far, use a dot instead of the name
+            if (radius >= MAX_RADIUS) {
                 // Dot instead of text. Display on edge of outermost server.
                 img.setVisibility(View.VISIBLE);
                 friend.setVisibility(View.INVISIBLE);
@@ -171,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
                 Pair<Integer, Float> pair = angleRads.get(j);
                 if (radius < pair.first + 10 && radius > pair.first - 10) {
                     if (angle < pair.second + 3 && angle > pair.second - 3) {
-                        radius -= 40;
+                        radius -= 60;
                     }
                 }
             }
@@ -195,42 +184,22 @@ public class MainActivity extends AppCompatActivity {
         TextView orientation_text = findViewById(R.id.orientation_text);
 
         orientation_text.setText(Float.toString(orientation));
-
-//        RotateAnimation rotateAnimation =
-//                new RotateAnimation(currentDegree ,-1 *(this.orientation_current), Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-//        rotateAnimation.setDuration(250);
-//        rotateAnimation.setFillAfter(true);
-//
-//        this.currentDegree = -1*(this.orientation_current);
-//        ImageView imageView = findViewById(R.id.compassImg);
-//        imageView.startAnimation(rotateAnimation);
+        updateCompass(viewModel.getData().getValue());
 
     }
 
+    // Show the user's current location
     public void updateLocation(Pair<Double, Double> loc) {
         TextView location_text = findViewById(R.id.location_text);
 
-        //ImageView point = findViewById(R.id.point);
-        //point.setX(CoordinateUtil.directionBetweenPoints(loc.first,myFriend.getLat(),loc.second,myFriend.getLong()));
-        //point.setY(CoordinateUtil.directionBetweenPoints(loc.first,myFriend.getLat(),loc.second,myFriend.getLong()));
-
-        //getResources().getDisplayMetrics().density;
-
-        //int px = (int) (150*getResources().getDisplayMetrics().density/160);
-//        float angle = CoordinateUtil.directionBetweenPoints(loc.first,myFriend.getLat(),loc.second,myFriend.getLongit());
-//        point.setX(lh.x_coordinate(angle));
-//        point.setY(lh.y_coordinate(angle));
-
-        // TODO Update all friend locations too
         location_text.setText(Double.toString(loc.first) + " , " + Double.toString(loc.second));
-        //point.setVisibility(View.VISIBLE);
+        updateCompass(viewModel.getData().getValue());
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         executor.shutdown();
-        this.orientGetter.halt();
     }
 
     @Override
@@ -239,9 +208,6 @@ public class MainActivity extends AppCompatActivity {
 
         checkLocationPermissions();
         loadProfile();
-
-        //ImageView point = findViewById(R.id.point);
-        //point.setVisibility(View.INVISIBLE);
 
         // set up Location and Orientation services
         orientGetter = new ActualOrientation(this);
@@ -252,10 +218,6 @@ public class MainActivity extends AppCompatActivity {
         uuid_view.setText("Your UUID: " + user_UUID);
 
         GPSCheck();
-
-
-//        TextView gpsOnline = findViewById(R.id.gpsStatus);
-//        gpsOnline.setText(String.valueOf(gpsstatus));
 
         setUpLocationExecutor();
         updateCompass(viewModel.getData().getValue());
@@ -282,6 +244,7 @@ public class MainActivity extends AppCompatActivity {
 
             // Upload your current location to the server
             var location = locGetter.getLocation();
+            if (location == null) { return; }
             var to_upload = new LocationData(this.user_UUID, this.user_name, location.first, location.second, false);
             to_upload.private_code = this.private_code;
             api.put(to_upload);
@@ -289,12 +252,14 @@ public class MainActivity extends AppCompatActivity {
             // Pull the updated location of all your friends from the server
             for (var f : friends)
             {
+                Log.e("FRIEND: ", f.public_code);
                 var got = api.get(f.public_code);
+                if (got == null) continue;
                 dao.upsert(got);
-                Log.e("FRIEND: ", got.toString());
+
             }
 
-        }, 9, 3, TimeUnit.SECONDS);
+        }, 3, 3, TimeUnit.SECONDS);
     }
 
     private void loadProfile() {
